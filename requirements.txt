@@ -1,0 +1,16 @@
+flask
+flask-smorest
+python-dotenv
+marshmallow
+sqlalchemy
+flask-sqlalchemy
+flask-jwt-extended
+passlib
+flask-migrate
+gunicorn
+psycopg2
+requests
+rq
+redis
+flask_mysqldb
+Flask-Cors==3.0.8
