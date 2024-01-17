@@ -3,6 +3,6 @@ FROM python:3.11
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir  --upgrade -r requirements.txt
-RUN pip install flask
 COPY . .
-CMD ["flask", "run", "--host=0.0.0.0", "--port=5000", "--reload"]
+CMD ["gunicorn", "--bind", "0.0.0.0:80", "app:create_app()"]
+#CMD ["flask", "run", "--host=0.0.0.0", "--port=5000", "--reload"]
