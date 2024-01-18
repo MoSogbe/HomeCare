@@ -1,3 +1,4 @@
 .homecareenv
-.env
 __pycache__
+.app_localhost
+.env.example

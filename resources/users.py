@@ -15,7 +15,6 @@ from blocklist import BLOCKLIST
 blp = Blueprint("Users", "users", description="Operations  on user model")
 
 
-
 @blp.route("/login")
 class UserLogin(MethodView):
     @blp.arguments(UserSchema)
