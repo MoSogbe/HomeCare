@@ -22,7 +22,7 @@ def create_app(db_url=None):
     app = Flask(__name__)
     load_dotenv()
     
-    CORS(app, resources={ r'/*': {'origins': '*'}})
+    CORS(app, resources={ r'/*': {'origins': 'localhost:3000'}})
     app.config["API_TITLE"] = "HomeCare API"
     app.config["API_VERSION"] = "v1"
     app.config["OPENAPI_VERSION"] = "3.0.3"
