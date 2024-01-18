@@ -23,8 +23,8 @@ class UserLogin(MethodView):
         if user and pbkdf2_sha256.verify(user_data["password"], user.password):
             access_token = create_access_token(identity=user.id, fresh=True)
             refresh_token = create_refresh_token(identity=user.id)
-            user_type = user.user_type
-            return {"access_token": access_token, "refresh_token" : refresh_token, "user_type":user_type}
+            user = user.user_type
+            return {"access_token": access_token, "refresh_token" : refresh_token, "user":user}
         abort(401,message="Invalid Credentials")
 
 @blp.route("/refresh")
