@@ -14,6 +14,13 @@ from blocklist import BLOCKLIST
 
 blp = Blueprint("Users", "users", description="Operations  on user model")
 
+@blp.route("/users")
+class Users(MethodView):
+    @jwt_required()
+    @blp.response(200, UserSchema(many=True))
+    def get(self):
+        return UserModel.query.all()
+
 
 @blp.route("/login")
 class UserLogin(MethodView):
