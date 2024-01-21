@@ -61,5 +61,22 @@ class UoMSchema(Schema):
     unit_name = fields.Str(required=True)
     symbol = fields.Str(required=True)
     
+class BStatusSchema(Schema):
+    id = fields.Int(dump_only=True)
+    status = fields.Str(required=True)
+    
+class MedicalConditionSchema(Schema):
+    id = fields.Int(dump_only=True)
+    condition_name = fields.Str(required=True)
+    
+class GenderSchema(Schema):
+    id = fields.Int(dump_only=True)
+    name = fields.Str(required=True)
+    
+class BioTitleSchema(Schema):
+    id = fields.Int(dump_only=True)
+    name = fields.Str(required=True)
+   
+    
     
     

@@ -1,6 +1,6 @@
 from db import db
 
-class BehavioralnModel(db.Model):
+class BStatusModel(db.Model):
     __tablename__ = "behavioral_statuses"
 
     id = db.Column(db.Integer, primary_key=True)

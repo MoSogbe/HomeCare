@@ -14,6 +14,10 @@ from resources.company import blp as CompanyBlueprint
 from resources.service_category import blp as ServiceCategoryBlueprint
 from resources.services import blp as ServicesBlueprint
 from resources.uom import blp as UOMBlueprint
+from resources.behavioral_status import blp as BStatusBlueprint
+from resources.medical_condition import blp as MedicalConditionBlueprint
+from resources.gender import blp as GenderBlueprint
+from resources.bio_title import blp as BTitleBlueprint
 from blocklist import BLOCKLIST
 from flask_migrate import Migrate
 from flask_cors import CORS
@@ -39,6 +43,7 @@ def create_app(db_url=None):
     migrate = Migrate(app,db)
     api = Api(app)
     app.config["JWT_SECRET_KEY"] = "brownfoxjumponthewall"
+    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = 3600
     jwt=JWTManager(app)
     @jwt.token_in_blocklist_loader
     def check_if_token_in_blocklist(jwt_header,jwt_payload):
@@ -103,5 +108,8 @@ def create_app(db_url=None):
     api.register_blueprint(ServiceCategoryBlueprint)
     api.register_blueprint(ServicesBlueprint)
     api.register_blueprint(UOMBlueprint)
-   
+    api.register_blueprint(BStatusBlueprint)
+    api.register_blueprint(MedicalConditionBlueprint)
+    api.register_blueprint(GenderBlueprint)
+    api.register_blueprint(BTitleBlueprint)
     return app

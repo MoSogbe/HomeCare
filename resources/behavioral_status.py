@@ -4,72 +4,72 @@ from sqlalchemy.exc import SQLAlchemyError
 from flask_jwt_extended import get_jwt_identity, jwt_required, get_jwt
 from db import db
 from sqlalchemy import or_
-from models.user_types import UserTypeModel
-from schemas import UserSchema,UserTypeSchema,UserTypeUpdateSchema
+from models.behavioral_status import BStatusModel
+from schemas import BStatusSchema
 from datetime import datetime
 
-blp = Blueprint("User Types", "user_types", description="Operations on User Types")
+blp = Blueprint("Behavioral Status", "behavioral_statuses", description="Operations on Behavioral Status")
 
 
-@blp.route("/user-type/<string:user_type_id>")
+@blp.route("/behavioral-status/<string:bstatus_id>")
 class UserType(MethodView):
     @jwt_required()
-    @blp.response(200, UserTypeSchema)
-    def get(self, user_type_id):
-        user_type = UserTypeModel.query.get_or_404(user_type_id)
-        return user_type
+    @blp.response(200, BStatusSchema)
+    def get(self, bstatus_id):
+        bstatus = BStatusModel.query.get_or_404(bstatus_id)
+        return bstatus
     @jwt_required()
-    def delete(self, user_type_id):
+    def delete(self, bstatus_id):
         jwt = get_jwt()
         if not jwt.get("is_admin"):
             abort(401, message="Admin privillege is required")
-        user_type = UserTypeModel.query.get_or_404(user_type_id)
-        db.session.delete(user_type_id)
+        bstatus = BStatusModel.query.get_or_404(bstatus_id)
+        db.session.delete(bstatus_id)
         db.session.commit()
         return {"message": "User Type deleted."}
     @jwt_required()
-    @blp.arguments(UserTypeUpdateSchema)
-    @blp.response(200, UserTypeSchema)
-    def put(self, user_type_data, user_type_id):
-        user_type = UserTypeModel.query.get(user_type_id)
+    #@blp.arguments(UserTypeUpdateSchema)
+    @blp.response(200, BStatusSchema)
+    def put(self, bstatus_data, bstatus_id):
+        bstatus = BStatusModel.query.get(bstatus_id)
 
-        if user_type:
-            user_type.type_name = user_type_data["type_name"]
+        if bstatus:
+            bstatus.status = bstatus_data["status"]
         else:
-            user_type = UserTypeModel(id=user_type_id, **user_type_data)
+            bstatus = BStatusModel(id=bstatus_id, **bstatus_data)
 
-        db.session.add(user_type)
+        db.session.add(bstatus)
         db.session.commit()
 
-        return user_type
+        return bstatus
 
 
-@blp.route("/user-type")
+@blp.route("/behavioral-status")
 class UserTypeList(MethodView):
     @jwt_required()
-    @blp.response(200, UserTypeSchema(many=True))
+    @blp.response(200, BStatusSchema(many=True))
     def get(self):
-        return UserTypeModel.query.all()
+        return BStatusModel.query.all()
     @jwt_required()
-    @blp.arguments(UserTypeSchema)
-    @blp.response(201, UserTypeSchema)
-    def post(self, user_type_data):
-        if UserTypeModel.query.filter(
+    @blp.arguments(BStatusSchema)
+    @blp.response(201, BStatusSchema)
+    def post(self, bstatus_data):
+        if BStatusModel.query.filter(
             or_
             (
-             UserTypeModel.type_name==user_type_data["type_name"],
+             BStatusModel.status==bstatus_data["status"],
            
              )).first():
-            abort(409, message="A User Type with that name already exist")
-        user_type = UserTypeModel(
-            type_name = user_type_data["type_name"],
+            abort(409, message="A behavioral status with that name already exist")
+        bstatus = BStatusModel(
+            status = bstatus_data["status"],
             created_at = datetime.now(),
             updated_at = datetime.now()
         )
         try:
-            db.session.add(user_type)
+            db.session.add(bstatus)
             db.session.commit()
-        except SQLAlchemyError:
-            abort(500, message="An error occurred while inserting the user type.")
+        except SQLAlchemyError as e:
+            abort(500, message=f"An error occurred while inserting the behavioral-status {e}.")
 
-        return user_type
+        return bstatus

@@ -4,5 +4,7 @@ from models.company import CompanyModel
 from models.service import ServiceModel
 from models.service_category import ServiceCategoryModel
 from models.medical_conditions import MedicalConditionModel
-from models.behavioral_status import BehavioralnModel
+from models.behavioral_status import BStatusModel
 from models.unit_of_measurement import UoMModel
+from models.gender import GenderModel
+from models.bio_title import BTitleModel
