@@ -1,16 +1,7 @@
 from marshmallow import Schema, fields
 from datetime import datetime
-class UserSchema(Schema):
-    id = fields.Int(dump_only=True)
-    username = fields.Str(required=True)
-    password = fields.Str(required=True, load_only=True)
-   
-    
-class UserRegistersSchema(UserSchema):
-    fullname = fields.Str(required=True)
-    email = fields.Str(required=True)
-    user_type = fields.Str(required=True)
-    
+ 
+
 class UserTypeSchema(Schema):
     id = fields.Int(dump_only=True)
     type_name = fields.Str(required=True)
@@ -19,6 +10,25 @@ class UserTypeSchema(Schema):
     
 class UserTypeUpdateSchema(Schema):
     type_name = fields.Str(required=True)
+    
+class UserSchema(Schema):
+    id = fields.Int(dump_only=True)
+    username = fields.Str(required=True)
+    password = fields.Str(required=True, load_only=True)
+    
+class FetchUserSchema(Schema):
+    id = fields.Int(dump_only=True)
+    fullname = fields.Str(required=True)
+    user_type = fields.Nested(UserTypeSchema)
+    username = fields.Str(required=True)
+
+class UserListSchema(Schema):
+    users = fields.Nested(FetchUserSchema, many=True)
+    
+class UserRegistersSchema(UserSchema):
+    fullname = fields.Str(required=True)
+    email = fields.Str(required=True)
+    user_type = fields.Str(required=True)
     
     
 class CompanySchema(Schema):

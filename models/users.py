@@ -8,7 +8,8 @@ class UserModel(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(250), unique=True, nullable=False)
     password = db.Column(db.String(250), nullable=False)
-    user_type = db.Column(db.Integer, db.ForeignKey('user_types.id'), nullable=False)
     created_at = db.Column(db.DateTime(), nullable=False)
     updated_at = db.Column(db.DateTime(), nullable=False)
+    user_type_id = db.Column(db.Integer, db.ForeignKey('user_types.id'), nullable=False)
+    user_type = db.relationship('UserTypeModel', backref='users', lazy=True)
     

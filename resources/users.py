@@ -7,9 +7,10 @@ import requests
 import os
 from flask import current_app
 from sqlalchemy import or_
+from sqlalchemy.orm import joinedload
 from db import db
-from models import  UserModel
-from schemas import UserSchema, UserRegistersSchema
+from models import  UserModel,UserTypeModel
+from schemas import UserSchema, UserRegistersSchema,FetchUserSchema,UserListSchema
 from flask_jwt_extended import create_access_token,create_refresh_token,get_jwt_identity, get_jwt,jwt_required
 from blocklist import BLOCKLIST
 
@@ -18,9 +19,14 @@ blp = Blueprint("Users", "users", description="Operations  on user model")
 @blp.route("/users")
 class Users(MethodView):
     @jwt_required()
-    @blp.response(200, UserSchema(many=True))
+    #@blp.response(200, FetchUserSchema(many=True))
     def get(self):
-        return UserModel.query.all()
+        
+        users = UserModel.query.all()
+        user_list_schema = UserListSchema()
+        result = user_list_schema.dump({'users': users})
+        return result
+        
 
 
 @blp.route("/login")
@@ -70,7 +76,7 @@ class UserRegister(MethodView):
             fullname = user_data["fullname"],
             username = user_data["username"],
             email = user_data["email"],
-            user_type = user_data["user_type"],
+            user_type_id = user_data["user_type"],
             password = pbkdf2_sha256.hash(user_data["password"]),
             created_at = datetime.now(),
             updated_at = datetime.now()
