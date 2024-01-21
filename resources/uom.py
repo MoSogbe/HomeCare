@@ -28,11 +28,10 @@ class UoMType(MethodView):
         db.session.commit()
         return {"message": "UOM Type deleted."}
     @jwt_required()
-    #@blp.arguments(UserTypeUpdateSchema)
+    @blp.arguments(UoMSchema)
     @blp.response(200, UoMSchema)
     def put(self, uom_data, uom_id):
         uom = UoMModel.query.get(uom_id)
-
         if uom:
             uom.unit_name = uom_data["unit_name"],
             uom.symbol = uom_data["symbol"]
