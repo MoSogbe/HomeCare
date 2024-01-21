@@ -26,22 +26,22 @@ class BioTitleType(MethodView):
         bstatus = BTitleModel.query.get_or_404(bio_title_id)
         db.session.delete(bio_title_id)
         db.session.commit()
-        return {"message": "User Type deleted."}
+        return {"message": "Bio Title Type deleted."}
     @jwt_required()
     #@blp.arguments(UserTypeUpdateSchema)
     @blp.response(200, BioTitleSchema)
-    def put(self, bstatus_data, btitle_id):
-        bstatus = BTitleModel.query.get(btitle_id)
+    def put(self, bio_title_data, btitle_id):
+        bio_title = BTitleModel.query.get(btitle_id)
 
-        if bstatus:
-            bstatus.status = bstatus_data["status"]
+        if bio_title:
+            bio_title.bio_name = bio_title_data["bio_name"]
         else:
-            bstatus = BTitleModel(id=btitle_id, **bstatus_data)
+            bio_title = BTitleModel(id=btitle_id, **bio_title_data)
 
-        db.session.add(bstatus)
+        db.session.add(bio_title)
         db.session.commit()
 
-        return bstatus
+        return bio_title
 
 
 @blp.route("/bio-title")
@@ -57,12 +57,12 @@ class BioTitleList(MethodView):
         if BTitleModel.query.filter(
             or_
             (
-             BTitleModel.status==bstatus_data["status"],
+             BTitleModel.bio_name==bstatus_data["bio_name"],
            
              )).first():
             abort(409, message="A bio title with that name already exist")
         bstatus = BTitleModel(
-            status = bstatus_data["status"],
+            bio_title = bstatus_data["bio_title"],
             created_at = datetime.now(),
             updated_at = datetime.now()
         )

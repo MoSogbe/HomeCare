@@ -24,9 +24,9 @@ class UserType(MethodView):
         if not jwt.get("is_admin"):
             abort(401, message="Admin privillege is required")
         bstatus = BStatusModel.query.get_or_404(bstatus_id)
-        db.session.delete(bstatus_id)
+        db.session.delete(bstatus)
         db.session.commit()
-        return {"message": "User Type deleted."}
+        return {"message": "Behavioral Status Type deleted."}
     @jwt_required()
     #@blp.arguments(UserTypeUpdateSchema)
     @blp.response(200, BStatusSchema)
