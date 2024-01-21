@@ -38,10 +38,11 @@ class UoMType(MethodView):
             uom.symbol = uom_data["symbol"]
         else:
             uom = UoMModel(id=uom_id, **uom_data)
-
-        db.session.add(uom)
-        db.session.commit()
-
+        try:
+            db.session.add(uom)
+            db.session.commit()
+        except SQLAlchemyError as e:
+            abort(500, message=f"An error occurred while updating the uom.{e}")
         return uom
 
 
