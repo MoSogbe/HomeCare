@@ -1,5 +1,6 @@
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
+from sqlalchemy.exc import SQLAlchemyError
 from passlib.hash import pbkdf2_sha256
 from datetime import datetime
 import requests
@@ -74,10 +75,11 @@ class UserRegister(MethodView):
             created_at = datetime.now(),
             updated_at = datetime.now()
         )
-        db.session.add(user)
-        db.session.commit()
-        
-               
+        try:
+            db.session.add(user)
+            db.session.commit()
+        except SQLAlchemyError as e:
+            abort(500, message=f"An error occurred while inserting the user type. {e}")    
         return {"message": "User created successfully"}, 201
 
 @blp.route("/user/<int:user_id>")
