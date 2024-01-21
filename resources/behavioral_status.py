@@ -28,7 +28,7 @@ class UserType(MethodView):
         db.session.commit()
         return {"message": "Behavioral Status Type deleted."}
     @jwt_required()
-    #@blp.arguments(UserTypeUpdateSchema)
+    @blp.arguments(BStatusSchema)
     @blp.response(200, BStatusSchema)
     def put(self, bstatus_data, bstatus_id):
         bstatus = BStatusModel.query.get(bstatus_id)

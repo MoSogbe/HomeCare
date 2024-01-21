@@ -28,7 +28,7 @@ class UserType(MethodView):
         db.session.commit()
         return {"message": "User Type deleted."}
     @jwt_required()
-    #@blp.arguments(UserTypeUpdateSchema)
+    @blp.arguments(MedicalConditionSchema)
     @blp.response(200, MedicalConditionSchema)
     def put(self, medical_condition_data, md_id):
         medical_condition = MedicalConditionModel.query.get(md_id)

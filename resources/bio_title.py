@@ -28,7 +28,7 @@ class BioTitleType(MethodView):
         db.session.commit()
         return {"message": "Bio Title Type deleted."}
     @jwt_required()
-    #@blp.arguments(UserTypeUpdateSchema)
+    @blp.arguments(BioTitleSchema)
     @blp.response(200, BioTitleSchema)
     def put(self, bio_title_data, btitle_id):
         bio_title = BTitleModel.query.get(btitle_id)

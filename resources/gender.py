@@ -28,7 +28,7 @@ class GenderType(MethodView):
         db.session.commit()
         return {"message": "Gender  Type deleted."}
     @jwt_required()
-    #@blp.arguments(UserTypeUpdateSchema)
+    @blp.arguments(GenderSchema)
     @blp.response(200, GenderSchema)
     def put(self, gender_data, gender_id):
         gender = GenderModel.query.get(gender_id)
