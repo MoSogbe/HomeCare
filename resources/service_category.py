@@ -21,8 +21,8 @@ class ServiceCategory(MethodView):
     @jwt_required()
     def delete(self, service_category_id):
         jwt = get_jwt()
-        if not jwt.get("is_admin"):
-            abort(401, message="Admin privillege is required")
+        # if not jwt.get("is_admin"):
+        #     abort(401, message="Admin privillege is required")
         service_category = ServiceCategoryModel.query.get_or_404(service_category_id)
         db.session.delete(service_category)
         db.session.commit()

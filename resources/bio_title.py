@@ -21,8 +21,8 @@ class BioTitleType(MethodView):
     @jwt_required()
     def delete(self,bio_title_id):
         jwt = get_jwt()
-        if not jwt.get("is_admin"):
-            abort(401, message="Admin privillege is required")
+        # if not jwt.get("is_admin"):
+        #     abort(401, message="Admin privillege is required")
         bstatus = BTitleModel.query.get_or_404(bio_title_id)
         db.session.delete(bio_title_id)
         db.session.commit()

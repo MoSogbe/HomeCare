@@ -21,8 +21,8 @@ class UserType(MethodView):
     @jwt_required()
     def delete(self, md_id):
         jwt = get_jwt()
-        if not jwt.get("is_admin"):
-            abort(401, message="Admin privillege is required")
+        # if not jwt.get("is_admin"):
+        #     abort(401, message="Admin privillege is required")
         medical_condition = MedicalConditionModel.query.get_or_404(md_id)
         db.session.delete(md_id)
         db.session.commit()

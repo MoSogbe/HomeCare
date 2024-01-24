@@ -21,8 +21,8 @@ class GenderType(MethodView):
     @jwt_required()
     def delete(self, gender_id):
         jwt = get_jwt()
-        if not jwt.get("is_admin"):
-            abort(401, message="Admin privillege is required")
+        # if not jwt.get("is_admin"):
+        #     abort(401, message="Admin privillege is required")
         gender = GenderModel.query.get_or_404(gender_id)
         db.session.delete(gender_id)
         db.session.commit()

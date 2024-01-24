@@ -21,8 +21,8 @@ class UoMType(MethodView):
     @jwt_required()
     def delete(self, uom_id):
         jwt = get_jwt()
-        if not jwt.get("is_admin"):
-            abort(401, message="Admin privillege is required")
+        # if not jwt.get("is_admin"):
+        #     abort(401, message="Admin privillege is required")
         uom = UoMModel.query.get_or_404(uom_id)
         db.session.delete(uom_id)
         db.session.commit()

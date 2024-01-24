@@ -21,8 +21,8 @@ class UserType(MethodView):
     @jwt_required()
     def delete(self, user_type_id):
         jwt = get_jwt()
-        if not jwt.get("is_admin"):
-            abort(401, message="Admin privillege is required")
+        # if not jwt.get("is_admin"):
+        #     abort(401, message="Admin privillege is required")
         user_type = UserTypeModel.query.get_or_404(user_type_id)
         db.session.delete(user_type_id)
         db.session.commit()
