@@ -8,3 +8,4 @@ from models.behavioral_status import BStatusModel
 from models.unit_of_measurement import UoMModel
 from models.gender import GenderModel
 from models.bio_title import BTitleModel
+from models.careg_giver import CaregiverModel

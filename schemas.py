@@ -85,7 +85,7 @@ class GenderSchema(Schema):
     
 class BioTitleSchema(Schema):
     id = fields.Int(dump_only=True)
-    name = fields.Str(required=True)
+    bio_name = fields.Str(required=True)
    
     
     
