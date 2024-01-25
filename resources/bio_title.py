@@ -67,7 +67,7 @@ class BioTitleList(MethodView):
              )).first():
             abort(409, message="A bio title with that name already exist")
         bstatus = BTitleModel(
-            bio_title = bstatus_data["bio_title"],
+            bio_name = bstatus_data["bio_name"],
             created_at = datetime.now(),
             updated_at = datetime.now()
         )
