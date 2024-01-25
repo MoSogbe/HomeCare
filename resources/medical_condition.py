@@ -23,10 +23,14 @@ class UserType(MethodView):
         jwt = get_jwt()
         # if not jwt.get("is_admin"):
         #     abort(401, message="Admin privillege is required")
-        medical_condition = MedicalConditionModel.query.get_or_404(md_id)
-        db.session.delete(md_id)
-        db.session.commit()
-        return {"message": "User Type deleted."}
+        try:
+            medical_condition = MedicalConditionModel.query.get_or_404(md_id)
+            db.session.delete(md_id)
+            db.session.commit()
+            return {"message": "User Type deleted."}
+        except SQLAlchemyError as e:
+                abort(500, message=f"An error occurred while inserting the services. {e}")
+                
     @jwt_required()
     @blp.arguments(MedicalConditionSchema)
     @blp.response(200, MedicalConditionSchema)

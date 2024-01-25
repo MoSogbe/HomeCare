@@ -23,10 +23,14 @@ class ServiceCategory(MethodView):
         jwt = get_jwt()
         # if not jwt.get("is_admin"):
         #     abort(401, message="Admin privillege is required")
-        service_category = ServiceCategoryModel.query.get_or_404(service_category_id)
-        db.session.delete(service_category)
-        db.session.commit()
-        return {"message": "Service Category  deleted."}
+        try:
+            service_category = ServiceCategoryModel.query.get_or_404(service_category_id)
+            db.session.delete(service_category)
+            db.session.commit()
+            return {"message": "Service Category  deleted."}
+        except SQLAlchemyError as e:
+                abort(500, message=f"An error occurred while inserting the services. {e}")
+                
     @jwt_required()
     @blp.arguments(ServiceCategoryUpdateSchema)
     @blp.response(200, ServiceCategorySchema)

@@ -23,10 +23,16 @@ class GenderType(MethodView):
         jwt = get_jwt()
         # if not jwt.get("is_admin"):
         #     abort(401, message="Admin privillege is required")
-        gender = GenderModel.query.get_or_404(gender_id)
-        db.session.delete(gender_id)
-        db.session.commit()
-        return {"message": "Gender  Type deleted."}
+        try:
+            gender = GenderModel.query.get_or_404(gender_id)
+            db.session.delete(gender_id)
+            db.session.commit()
+            return {"message": "Gender  Type deleted."}
+        except SQLAlchemyError as e:
+                abort(500, message=f"An error occurred while inserting the services. {e}")
+    
+    
+       
     @jwt_required()
     @blp.arguments(GenderSchema)
     @blp.response(200, GenderSchema)

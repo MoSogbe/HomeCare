@@ -23,10 +23,14 @@ class UserType(MethodView):
         jwt = get_jwt()
         # if not jwt.get("is_admin"):
         #     abort(401, message="Admin privillege is required")
-        bstatus = BStatusModel.query.get_or_404(bstatus_id)
-        db.session.delete(bstatus)
-        db.session.commit()
-        return {"message": "Behavioral Status Type deleted."}
+        try:
+            bstatus = BStatusModel.query.get_or_404(bstatus_id)
+            db.session.delete(bstatus)
+            db.session.commit()
+            return {"message": "Behavioral Status Type deleted."}
+        except SQLAlchemyError as e:
+                abort(500, message=f"An error occurred while inserting the services. {e}")
+                
     @jwt_required()
     @blp.arguments(BStatusSchema)
     @blp.response(200, BStatusSchema)

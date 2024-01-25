@@ -23,9 +23,10 @@ class UserType(MethodView):
         jwt = get_jwt()
         # if not jwt.get("is_admin"):
         #     abort(401, message="Admin privillege is required")
+       
         try:
             services = ServiceModel.query.get_or_404(service_id)
-            db.session.delete(service_id)
+            db.session.delete(services)
             db.session.commit()
             return {"message": "Service Type deleted."}
     

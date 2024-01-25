@@ -23,10 +23,14 @@ class UoMType(MethodView):
         jwt = get_jwt()
         # if not jwt.get("is_admin"):
         #     abort(401, message="Admin privillege is required")
-        uom = UoMModel.query.get_or_404(uom_id)
-        db.session.delete(uom_id)
-        db.session.commit()
-        return {"message": "UOM Type deleted."}
+        try:
+            uom = UoMModel.query.get_or_404(uom_id)
+            db.session.delete(uom)
+            db.session.commit()
+            return {"message": "UOM Type deleted."}
+        except SQLAlchemyError as e:
+                abort(500, message=f"An error occurred while inserting the services. {e}")
+                
     @jwt_required()
     @blp.arguments(UoMSchema)
     @blp.response(200, UoMSchema)
