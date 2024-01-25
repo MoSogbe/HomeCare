@@ -69,7 +69,6 @@ class UoMList(MethodView):
         uom = UoMModel(
             unit_name = uom_data["unit_name"],
             symbol = uom_data["symbol"],
-            
             created_at = datetime.now(),
             updated_at = datetime.now()
         )

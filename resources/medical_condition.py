@@ -25,7 +25,7 @@ class UserType(MethodView):
         #     abort(401, message="Admin privillege is required")
         try:
             medical_condition = MedicalConditionModel.query.get_or_404(md_id)
-            db.session.delete(md_id)
+            db.session.delete(medical_condition)
             db.session.commit()
             return {"message": "User Type deleted."}
         except SQLAlchemyError as e:
@@ -66,7 +66,7 @@ class UserTypeList(MethodView):
              )).first():
             abort(409, message="A condition name with that name already exist")
         medical_condition = MedicalConditionModel(
-            status = medical_condition_data["condition_name"],
+            condition_name = medical_condition_data["condition_name"],
             created_at = datetime.now(),
             updated_at = datetime.now()
         )
