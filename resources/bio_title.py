@@ -29,7 +29,7 @@ class BioTitleType(MethodView):
             db.session.commit()
             return {"message": "Bio Title Type deleted."}
         except SQLAlchemyError as e:
-                abort(500, message=f"An error occurred while inserting the services. {e}")
+                abort(500, message=f"An error occurred while deleting the bio title. {e}")
     
    
     @jwt_required()

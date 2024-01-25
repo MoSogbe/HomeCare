@@ -29,7 +29,7 @@ class UserType(MethodView):
             db.session.commit()
             return {"message": "Behavioral Status Type deleted."}
         except SQLAlchemyError as e:
-                abort(500, message=f"An error occurred while inserting the services. {e}")
+                abort(500, message=f"An error occurred while deleting the behavioral status. {e}")
                 
     @jwt_required()
     @blp.arguments(BStatusSchema)

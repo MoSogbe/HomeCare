@@ -29,7 +29,7 @@ class GenderType(MethodView):
             db.session.commit()
             return {"message": "Gender  Type deleted."}
         except SQLAlchemyError as e:
-                abort(500, message=f"An error occurred while inserting the services. {e}")
+                abort(500, message=f"An error occurred while deleting the gender. {e}")
     
     
        

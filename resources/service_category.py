@@ -29,7 +29,7 @@ class ServiceCategory(MethodView):
             db.session.commit()
             return {"message": "Service Category  deleted."}
         except SQLAlchemyError as e:
-                abort(500, message=f"An error occurred while inserting the services. {e}")
+                abort(500, message=f"An error occurred while deleting the service category. {e}")
                 
     @jwt_required()
     @blp.arguments(ServiceCategoryUpdateSchema)

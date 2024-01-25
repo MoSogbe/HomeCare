@@ -29,7 +29,7 @@ class UserType(MethodView):
             db.session.commit()
             return {"message": "User Type deleted."}
         except SQLAlchemyError as e:
-                abort(500, message=f"An error occurred while inserting the services. {e}")
+                abort(500, message=f"An error occurred while deleting the medical condition. {e}")
                 
     @jwt_required()
     @blp.arguments(MedicalConditionSchema)

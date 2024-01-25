@@ -29,7 +29,7 @@ class UoMType(MethodView):
             db.session.commit()
             return {"message": "UOM Type deleted."}
         except SQLAlchemyError as e:
-                abort(500, message=f"An error occurred while inserting the services. {e}")
+                abort(500, message=f"An error occurred while deleting the uom. {e}")
                 
     @jwt_required()
     @blp.arguments(UoMSchema)
