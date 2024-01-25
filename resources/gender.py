@@ -25,7 +25,7 @@ class GenderType(MethodView):
         #     abort(401, message="Admin privillege is required")
         try:
             gender = GenderModel.query.get_or_404(gender_id)
-            db.session.delete(gender_id)
+            db.session.delete(gender)
             db.session.commit()
             return {"message": "Gender  Type deleted."}
         except SQLAlchemyError as e:

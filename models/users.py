@@ -11,5 +11,5 @@ class UserModel(db.Model):
     created_at = db.Column(db.DateTime(), nullable=False)
     updated_at = db.Column(db.DateTime(), nullable=False)
     user_type_id = db.Column(db.Integer, db.ForeignKey('user_types.id'), nullable=False)
-    user_type = db.relationship('UserTypeModel', backref='users', lazy=True)
+    user_type = db.relationship('UserTypeModel', backref='users', lazy=True, overlaps="user_Types,users")
     

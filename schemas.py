@@ -86,6 +86,20 @@ class GenderSchema(Schema):
 class BioTitleSchema(Schema):
     id = fields.Int(dump_only=True)
     bio_name = fields.Str(required=True)
+    
+    
+class StaffSchema(Schema):
+    id = fields.Int(dump_only=True)
+    name = fields.Str(required=True)
+    email = fields.Str(required=True)
+    phone = fields.Str(required=True)
+    address = fields.Str(required=True)
+    location = fields.Str(required=True)
+    gender_id = fields.Str(required=True)
+    bio_title_id = fields.Str(required=True)
+    user_id = fields.Str(required=True)
+    profile_image = fields.Str(required=True)
+         
    
     
     
