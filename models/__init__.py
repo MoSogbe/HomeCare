@@ -9,3 +9,4 @@ from models.unit_of_measurement import UoMModel
 from models.gender import GenderModel
 from models.bio_title import BTitleModel
 from models.care_giver import CareGiverModel
+from models.participant import ParticipantModel

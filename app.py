@@ -19,6 +19,7 @@ from resources.medical_condition import blp as MedicalConditionBlueprint
 from resources.gender import blp as GenderBlueprint
 from resources.bio_title import blp as BTitleBlueprint
 from resources.care_givers import blp as StaffBlueprint
+from resources.participants import blp as ParticipantBlueprint
 from blocklist import BLOCKLIST
 from flask_migrate import Migrate
 from flask_cors import CORS
@@ -39,6 +40,7 @@ def create_app(db_url=None):
     app.config["SQLALCHEMY_DATABASE_URI"] = db_url or os.getenv("DATABASE_URL",f"mysql://homydb:<nikky/>@72.167.59.130:3306/homecaredb")
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["PROPAGATE_EXCEPTIONS"] = True
+    app.config['UPLOADED_PHOTOS_DEST'] = 'uploads'
     app.debug = True
     db.init_app(app)
     migrate = Migrate(app,db)
@@ -114,4 +116,5 @@ def create_app(db_url=None):
     api.register_blueprint(GenderBlueprint)
     api.register_blueprint(BTitleBlueprint)
     api.register_blueprint(StaffBlueprint)
+    api.register_blueprint(ParticipantBlueprint)
     return app

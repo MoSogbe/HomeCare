@@ -99,6 +99,19 @@ class StaffSchema(Schema):
     bio_title_id = fields.Str(required=True)
     user_id = fields.Str(required=True)
     profile_image = fields.Str(required=True)
+    
+class ParticipantSchema(Schema):
+    id = fields.Int(dump_only=True)
+    name = fields.Str(required=True)
+    dob = fields.Str(required=True)
+    ssn = fields.Str(required=True)
+    maid_number = fields.Str(required=True)
+    legal_status = fields.Str(required=True)
+    home_address = fields.Str(required=True)
+    home_phone = fields.Str(required=True)
+    gender_id = fields.Str(required=True)
+    bio_title_id = fields.Str(required=True)
+    profile_image = fields.Str(required=True)
          
    
     
