@@ -14,4 +14,3 @@ rq
 redis
 flask_mysqldb
 Flask-Cors==3.0.8
-Flask-Uploads
