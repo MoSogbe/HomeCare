@@ -15,17 +15,17 @@ blp = Blueprint("Staff Profile", "care_givers", description="Operations on Staff
 class StaffType(MethodView):
     @jwt_required()
     @blp.response(200, StaffSchema)
-    def get(self, care_giver_id):
-        care_giver = CareGiverModel.query.get_or_404(care_giver_id)
+    def get(self, staff_id):
+        care_giver = CareGiverModel.query.get_or_404(staff_id)
         return care_giver
     @jwt_required()
-    def delete(self,care_giver_id):
+    def delete(self,staff_id):
         jwt = get_jwt()
         # if not jwt.get("is_admin"):
         #     abort(401, message="Admin privillege is required")
         try:
-            btitle = CareGiverModel.query.get_or_404(care_giver_id)
-            db.session.delete(btitle)
+            staff = CareGiverModel.query.get_or_404(staff_id)
+            db.session.delete(staff)
             db.session.commit()
             return {"message": "Staff Profile Type deleted."}
         except SQLAlchemyError as e:
@@ -35,18 +35,18 @@ class StaffType(MethodView):
     @jwt_required()
     @blp.arguments(StaffSchema)
     @blp.response(200, StaffSchema)
-    def put(self, care_giver_data, staff_id):
-        care_giver = CareGiverModel.query.get(staff_id)
+    def put(self, staff_data, staff_id):
+        staff = CareGiverModel.query.get(staff_id)
 
-        if care_giver:
-            care_giver.name = care_giver_data["name"]
+        if staff:
+            staff.name = staff_data["name"]
         else:
-            care_giver = CareGiverModel(id=staff_id, **care_giver_data)
+            staff = CareGiverModel(id=staff_id, **staff_data)
 
-        db.session.add(care_giver)
+        db.session.add(staff)
         db.session.commit()
 
-        return care_giver
+        return staff
 
 
 @blp.route("/staff-profile")

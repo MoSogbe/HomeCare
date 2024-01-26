@@ -14,9 +14,10 @@ blp = Blueprint("Company Info", "compnaies", description="Operations on Company 
 @blp.route("/company-info")
 class CompanyList(MethodView):
     @jwt_required()
-    @blp.response(200, CompanySchema(many=True))
+    @blp.response(200, CompanySchema(many=False))
     def get(self):
-        return CompanyModel.query.first()
+        first_company = CompanyModel.query.first()
+        return first_company
     @jwt_required()
     @blp.arguments(CompanySchema)
     @blp.response(201, CompanySchema)
