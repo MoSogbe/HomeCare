@@ -20,6 +20,9 @@ from resources.gender import blp as GenderBlueprint
 from resources.bio_title import blp as BTitleBlueprint
 from resources.care_givers import blp as StaffBlueprint
 from resources.participants import blp as ParticipantBlueprint
+from resources.locations import blp as LocationBlueprint
+from resources.schedule_periods import blp as SPBlueprint
+from resources.scheduling import blp as SchedulingBlueprint
 from blocklist import BLOCKLIST
 from flask_migrate import Migrate
 from flask_cors import CORS
@@ -115,6 +118,10 @@ def create_app(db_url=None):
     api.register_blueprint(MedicalConditionBlueprint)
     api.register_blueprint(GenderBlueprint)
     api.register_blueprint(BTitleBlueprint)
+    api.register_blueprint(LocationBlueprint)
+    api.register_blueprint(SPBlueprint)
     api.register_blueprint(StaffBlueprint)
     api.register_blueprint(ParticipantBlueprint)
+    api.register_blueprint(SchedulingBlueprint)
+   
     return app

@@ -113,6 +113,34 @@ class ParticipantSchema(Schema):
     bio_title_id = fields.Str(required=True)
     profile_image = fields.Str(required=True)
          
+class LocationSchema(Schema):
+    id = fields.Int(dump_only=True)
+    location_name = fields.Str(required=True)
+    
+class LocationUpdateSchema(Schema):
+    location_name = fields.Str(required=True)
+    
+class SchedulePeriodSchema(Schema):
+    id = fields.Int(dump_only=True)
+    start_time = fields.Str(required=True)
+    end_time = fields.Str(required=True)
+    
+class SchedulePeriodUpdateSchema(Schema):
+    start_time = fields.Str(required=True)
+    end_time = fields.Str(required=True)
+    
+class SchedulingSchema(Schema):
+    id = fields.Int(dump_only=True)
+    location_id = fields.Str(required=True)
+    shift_period_id = fields.Str(required=True)
+    patient_id = fields.Str(required=True)
+    caregiver_id = fields.Str(required=True)
+    scheduled_by = fields.Str(required=True)
+    day_of_week = fields.Str(required=True)
+    month = fields.Str(required=True)
+    year = fields.Str(required=True)
+    
+    
    
     
     

@@ -10,3 +10,6 @@ from models.gender import GenderModel
 from models.bio_title import BTitleModel
 from models.care_giver import CareGiverModel
 from models.participant import ParticipantModel
+from models.locations import LocationModel
+from models.schedule_period import SchedulePeriodModel
+from models.scheduling import SchedulingModel
