@@ -140,6 +140,13 @@ class SchedulingSchema(Schema):
     month = fields.Str(required=True)
     year = fields.Str(required=True)
     
+class SchedulingReport(Schema):
+    id = fields.Int(dump_only=True)
+    start_date = fields.Str(required=True)
+    end_date = fields.Str(required=True)
+    report_type = fields.Str(required=True)
+   
+    
     
    
     

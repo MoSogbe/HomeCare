@@ -6,8 +6,8 @@ from flask_jwt_extended import get_jwt_identity, jwt_required, get_jwt
 from db import db
 from sqlalchemy import or_
 from models.scheduling import SchedulingModel
-from schemas import SchedulingSchema
-from datetime import datetime
+from schemas import SchedulingSchema,SchedulingReport
+from datetime import datetime, date,timedelta
 
 blp = Blueprint("Scheduling", "scheduling", description="Operations on Scheduling & Assignmnets")
 
@@ -78,3 +78,67 @@ class SchedulingList(MethodView):
         except SQLAlchemyError as e:
             abort(500, message=f"An error occurred while inserting the scheduling .{e}.")
         return scheduling
+    
+    
+@blp.route("/scheduling-report-today")
+class SchedulingReport(MethodView):
+    @jwt_required()
+    @blp.response(200, SchedulingSchema(many=True))
+    def get(self):
+        try:
+            today = date.today()
+            
+
+            response_data = SchedulingModel.query.filter(
+                db.func.DATE(SchedulingModel.created_at) == today
+            ).all()
+            # Process the result as needed
+            # For simplicity, let's assume 'result' is a list of dictionaries
+           
+
+            return response_data, 200
+        except Exception as e:
+            return {'error': str(e)}, 500
+        
+@blp.route("/scheduling-report-week")
+class SchedulingReportWeek(MethodView):
+    @jwt_required()
+    @blp.response(200, SchedulingSchema(many=True))
+    def get(self):
+        try:
+            today = date.today()
+            start_of_week = today - timedelta(days=today.weekday())
+            end_of_week = start_of_week + timedelta(days=6)
+
+            response_data = SchedulingModel.query.filter(
+                SchedulingModel.created_at >= start_of_week,
+                SchedulingModel.created_at <= end_of_week
+            ).all()
+            # Process the result as needed
+            # For simplicity, let's assume 'result' is a list of dictionaries
+           
+
+            return response_data, 200
+        except Exception as e:
+            return {'error': str(e)}, 500
+        
+@blp.route("/scheduling-report-month")
+class SchedulingReportMonth(MethodView):
+    @jwt_required()
+    @blp.response(200, SchedulingSchema(many=True))
+    def get(self):
+        try:
+            today = date.today()
+            start_of_month = date(today.year, today.month, 1)
+            end_of_month = date(today.year, today.month + 1, 1) - timedelta(days=1)
+
+            response_data = SchedulingModel.query.filter(
+                db.func.DATE(SchedulingModel.created_at).between(start_of_month, end_of_month)
+            ).all()
+            # Process the result as needed
+            # For simplicity, let's assume 'result' is a list of dictionaries
+           
+
+            return response_data, 200
+        except Exception as e:
+            return {'error': str(e)}, 500
