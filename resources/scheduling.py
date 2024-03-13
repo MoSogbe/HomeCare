@@ -1,11 +1,14 @@
-from flask import request
+from flask import jsonify, request
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from sqlalchemy.exc import SQLAlchemyError
 from flask_jwt_extended import get_jwt_identity, jwt_required, get_jwt
 from db import db
 from sqlalchemy import or_
-from models.scheduling import SchedulingModel
+from models import SchedulingModel, UserModel
+from models.care_giver import CareGiverModel
+from models.locations import LocationModel 
+from models.participant import ParticipantModel
 from schemas import SchedulingSchema,SchedulingReport
 from datetime import datetime, date,timedelta
 
@@ -88,39 +91,103 @@ class SchedulingReport(MethodView):
         try:
             today = date.today()
             
-
-            response_data = SchedulingModel.query.filter(
-                db.func.DATE(SchedulingModel.created_at) == today
-            ).all()
+            # response_data = SchedulingModel.query.filter(
+            #     db.func.DATE(SchedulingModel.created_at) == today
+            # ).all()
             # Process the result as needed
             # For simplicity, let's assume 'result' is a list of dictionaries
            
+            result = db.session.query(
+                SchedulingModel.id,
+                CareGiverModel.name.label('caregiver_name'),
+                ParticipantModel.name.label('patient_name'),
+                LocationModel.location_name.label('location_name'),
+                SchedulingModel.day_of_week,
+                SchedulingModel.month,
+                SchedulingModel.year,
+                SchedulingModel.created_at,
+                UserModel.fullname.label('fullname')
+                
+            ).join(CareGiverModel, SchedulingModel.caregiver_id == CareGiverModel.id).\
+                join(ParticipantModel, SchedulingModel.patient_id == ParticipantModel.id).\
+                join(LocationModel, SchedulingModel.location_id == LocationModel.id).\
+                join(UserModel, SchedulingModel.scheduled_by == UserModel.id).\
+                filter(db.func.DATE(SchedulingModel.created_at) == today).all()
 
-            return response_data, 200
+            # Convert each element to a dictionary
+            response_data = []
+            for item in result:
+               response_data.append({
+                    'id': item[0],
+                    'caregiver_name': item[1],
+                    'patient_name': item[2],
+                    'location_name': item[3],
+                    'day_of_week': item[4],
+                    'month': item[5],
+                    'year': item[6],
+                    'created_at': item[7],
+                    'Created_By': item[8],
+                    # Include other fields as needed
+                })
+
+            # Print the content of response_data for debugging
+            print("Response Data:", response_data)
+
+            # Return the response with the processed data
+            return jsonify({'data': response_data}), 200
         except Exception as e:
-            return {'error': str(e)}, 500
+            return jsonify({'error': str(e)}), 500
         
 @blp.route("/scheduling-report-week")
 class SchedulingReportWeek(MethodView):
     @jwt_required()
-    @blp.response(200, SchedulingSchema(many=True))
     def get(self):
         try:
+           
             today = date.today()
             start_of_week = today - timedelta(days=today.weekday())
             end_of_week = start_of_week + timedelta(days=6)
 
-            response_data = SchedulingModel.query.filter(
-                SchedulingModel.created_at >= start_of_week,
-                SchedulingModel.created_at <= end_of_week
-            ).all()
-            # Process the result as needed
-            # For simplicity, let's assume 'result' is a list of dictionaries
-           
+            result = db.session.query(
+                SchedulingModel.id,
+                CareGiverModel.name.label('caregiver_name'),
+                ParticipantModel.name.label('patient_name'),
+                LocationModel.location_name.label('location_name'),
+                SchedulingModel.day_of_week,
+                SchedulingModel.month,
+                SchedulingModel.year,
+                SchedulingModel.created_at,
+                UserModel.fullname.label('fullname')
+                
+            ).join(CareGiverModel, SchedulingModel.caregiver_id == CareGiverModel.id).\
+                join(ParticipantModel, SchedulingModel.patient_id == ParticipantModel.id).\
+                join(LocationModel, SchedulingModel.location_id == LocationModel.id).\
+                join(UserModel, SchedulingModel.scheduled_by == UserModel.id).\
+                filter(db.func.DATE(SchedulingModel.created_at).between(start_of_week, end_of_week)).all()
 
-            return response_data, 200
+            # Convert each element to a dictionary
+            response_data = []
+            for item in result:
+                response_data.append({
+                    'id': item[0],
+                    'caregiver_name': item[1],
+                    'patient_name': item[2],
+                    'location_name': item[3],
+                    'day_of_week': item[4],
+                    'month': item[5],
+                    'year': item[6],
+                    'created_at': item[7],
+                    'Created_By': item[8],
+                    # Include other fields as needed
+                })
+
+            # Print the content of response_data for debugging
+            print("Response Data:", response_data)
+
+            # Return the response with the processed data
+            return jsonify({'data': response_data}), 200
         except Exception as e:
-            return {'error': str(e)}, 500
+            return jsonify({'error': str(e)}), 500
         
 @blp.route("/scheduling-report-month")
 class SchedulingReportMonth(MethodView):
@@ -132,11 +199,52 @@ class SchedulingReportMonth(MethodView):
             start_of_month = date(today.year, today.month, 1)
             end_of_month = date(today.year, today.month + 1, 1) - timedelta(days=1)
 
-            response_data = SchedulingModel.query.filter(
-                db.func.DATE(SchedulingModel.created_at).between(start_of_month, end_of_month)
-            ).all()
+            # response_data = SchedulingModel.query.filter(
+            #     db.func.DATE(SchedulingModel.created_at).between(start_of_month, end_of_month)
+            # ).all()
             # Process the result as needed
             # For simplicity, let's assume 'result' is a list of dictionaries
+            
+            result = db.session.query(
+                SchedulingModel.id,
+                CareGiverModel.name.label('caregiver_name'),
+                ParticipantModel.name.label('patient_name'),
+                LocationModel.location_name.label('location_name'),
+                SchedulingModel.day_of_week,
+                SchedulingModel.month,
+                SchedulingModel.year,
+                SchedulingModel.created_at,
+                UserModel.fullname.label('fullname')
+                
+            ).join(CareGiverModel, SchedulingModel.caregiver_id == CareGiverModel.id).\
+                join(ParticipantModel, SchedulingModel.patient_id == ParticipantModel.id).\
+                join(LocationModel, SchedulingModel.location_id == LocationModel.id).\
+                join(UserModel, SchedulingModel.scheduled_by == UserModel.id).\
+                filter(db.func.DATE(SchedulingModel.created_at).between(start_of_month, end_of_month)).all()
+
+            # Convert each element to a dictionary
+            response_data = []
+            for item in result:
+                response_data.append({
+                    'id': item[0],
+                    'caregiver_name': item[1],
+                    'patient_name': item[2],
+                    'location_name': item[3],
+                    'day_of_week': item[4],
+                    'month': item[5],
+                    'year': item[6],
+                    'created_at': item[7],
+                    'Created_By': item[8],
+                    # Include other fields as needed
+                })
+
+            # Print the content of response_data for debugging
+            print("Response Data:", response_data)
+
+            # Return the response with the processed data
+            return jsonify({'data': response_data}), 200
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
            
 
             return response_data, 200
