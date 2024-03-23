@@ -28,6 +28,7 @@ class UserListSchema(Schema):
 class UserRegistersSchema(UserSchema):
     fullname = fields.Str(required=True)
     email = fields.Str(required=True)
+    username = fields.Str(required=True)
     user_type = fields.Str(required=True)
     
     
@@ -145,7 +146,30 @@ class SchedulingReport(Schema):
     start_date = fields.Str(required=True)
     end_date = fields.Str(required=True)
     report_type = fields.Str(required=True)
+
+class ParticipantServiceProviderHistorySchema(Schema):
+    id = fields.Int(dump_only=True)
+    participant_id = fields.Str(required=True)
+    service_type_id = fields.Int(required=True)
+    provider_name = fields.Str(required=True)
+    provider_address = fields.Str(required=True)
+    provider_phone = fields.Str(required=True)
    
+class DiagnosisSchema(Schema):
+    id = fields.Int(dump_only=True)
+    participant_id = fields.Str(required=True)
+    axis_name = fields.Str(required=True)
+    
+class MITSchema(Schema):
+    id = fields.Int(dump_only=True)
+    mit_name = fields.Str(required=True)
+    
+class MISchema(Schema):
+    id = fields.Int(dump_only=True)
+    mit_id = fields.Int(required=True)
+    participant_id = fields.Int(required=True)
+    created_by = fields.Int(required=True)
+    mi_name = fields.Str(required=True)
     
     
    

@@ -23,6 +23,9 @@ from resources.participants import blp as ParticipantBlueprint
 from resources.locations import blp as LocationBlueprint
 from resources.schedule_periods import blp as SPBlueprint
 from resources.scheduling import blp as SchedulingBlueprint
+from resources.participant_service_provider_history import blp as PSPHBlueprint
+from resources.diagnosis import blp as DiagnosisBlueprint
+from resources.medical_information import blp as MedicalInformationBlueprint
 from blocklist import BLOCKLIST
 from flask_migrate import Migrate
 from flask_cors import CORS
@@ -122,6 +125,9 @@ def create_app(db_url=None):
     api.register_blueprint(SPBlueprint)
     api.register_blueprint(StaffBlueprint)
     api.register_blueprint(ParticipantBlueprint)
+    api.register_blueprint(PSPHBlueprint)
+    api.register_blueprint(DiagnosisBlueprint)
+    api.register_blueprint(MedicalInformationBlueprint)
     api.register_blueprint(SchedulingBlueprint)
    
     return app

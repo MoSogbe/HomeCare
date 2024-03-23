@@ -13,3 +13,7 @@ from models.participant import ParticipantModel
 from models.locations import LocationModel
 from models.schedule_period import SchedulePeriodModel
 from models.scheduling import SchedulingModel
+from models.participant_service_provider_history import ParticipantServiceProviderHistoryModel
+from models.diagnosis import DiagnosisModel
+from models.mit import MITModel
+from models.medical_information import MedicalInformationModel
