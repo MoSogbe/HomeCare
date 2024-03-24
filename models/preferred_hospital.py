@@ -11,3 +11,14 @@ class PHModel(db.Model):
     created_at = db.Column(db.DateTime(), nullable=False)
     updated_at = db.Column(db.DateTime(), nullable=False)
     user = db.relationship('UserModel', backref='preferred_hospital')
+    
+    def serialize(self):
+        return {
+            'id': self.id,
+            'participant_id': self.participant_id,
+            'ph_name':self.ph_name,
+            'ph_address': self.ph_address,
+            'created_by':self.created_by
+            
+            
+        }

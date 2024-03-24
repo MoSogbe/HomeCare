@@ -30,6 +30,7 @@ from resources.eci import blp as ECIBlueprint
 from resources.case_manager import blp as CaseManagerBlueprint
 from resources.preferred_hospital import blp as PHBlueprint
 from resources.participant_physician import blp as PPBlueprint
+from resources.life_Story import blp as LifeStoryBluePrint
 from blocklist import BLOCKLIST
 from flask_migrate import Migrate
 from flask_cors import CORS
@@ -136,6 +137,7 @@ def create_app(db_url=None):
     api.register_blueprint(PHBlueprint)
     api.register_blueprint(ECIBlueprint)
     api.register_blueprint(CaseManagerBlueprint)
+    api.register_blueprint(LifeStoryBluePrint)
     api.register_blueprint(SchedulingBlueprint)
-   
+    
     return app

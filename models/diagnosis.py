@@ -10,3 +10,13 @@ class DiagnosisModel(db.Model):
     user = db.relationship('UserModel', backref='diagnosis')
     created_at = db.Column(db.DateTime(), nullable=False)
     updated_at = db.Column(db.DateTime(), nullable=False)
+    
+    def serialize(self):
+        return {
+            'id': self.id,
+            'participant_id': self.participant_id,
+            'axis_name':self.axis_name,
+            'created_by':self.created_by
+            
+            
+        }

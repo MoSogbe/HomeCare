@@ -12,3 +12,15 @@ class ECIModel(db.Model):
     created_at = db.Column(db.DateTime(), nullable=False)
     updated_at = db.Column(db.DateTime(), nullable=False)
     user = db.relationship('UserModel', backref='eci')
+    
+    def serialize(self):
+        return {
+            'id': self.id,
+            'participant_id': self.participant_id,
+            'gaurdian_name':self.gaurdian_name,
+            'gaurdian_phone': self.gaurdian_phone,
+            'gaurdian_address' : self.gaurdian_address,
+            'created_by':self.created_by
+            
+            
+        }

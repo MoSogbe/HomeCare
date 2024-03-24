@@ -10,3 +10,13 @@ class MedicalInformationModel(db.Model):
     created_at = db.Column(db.DateTime(), nullable=False)
     updated_at = db.Column(db.DateTime(), nullable=False)
     user = db.relationship('UserModel', backref='medical_information')
+    
+    def serialize(self):
+        return {
+            'id': self.id,
+            'participant_id': self.participant_id,
+            'mi_name':self.mi_name,
+            'created_by':self.created_by
+            
+            
+        }

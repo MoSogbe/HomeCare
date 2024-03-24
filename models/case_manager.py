@@ -15,3 +15,17 @@ class CaseManagerModel(db.Model):
     created_at = db.Column(db.DateTime(), nullable=False)
     updated_at = db.Column(db.DateTime(), nullable=False)
     user = db.relationship('UserModel', backref='case_manager')
+    
+    def serialize(self):
+        return {
+            'id': self.id,
+            'participant_id': self.participant_id,
+            'cm_name':self.cm_name,
+            'cm_phone': self.cm_phone,
+            'cm_emergency_phone' : self.cm_emergency_phone,
+            'cm_address': self.cm_address,
+            'cm_email_address': self.cm_email_address,
+            'created_by':self.created_by
+            
+            
+        }

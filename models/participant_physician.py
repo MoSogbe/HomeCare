@@ -12,3 +12,15 @@ class PPModel(db.Model):
     created_at = db.Column(db.DateTime(), nullable=False)
     updated_at = db.Column(db.DateTime(), nullable=False)
     user = db.relationship('UserModel', backref='participant_physician')
+    
+    def serialize(self):
+        return {
+            'id': self.id,
+            'participant_id': self.participant_id,
+            'physician_name':self.physician_name,
+            'physician_phone': self.physician_phone,
+            'physician_address' : self.physician_address,
+            'created_by':self.created_by
+            
+            
+        }
