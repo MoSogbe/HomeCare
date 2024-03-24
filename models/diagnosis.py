@@ -2,9 +2,8 @@ from db import db
 
 class DiagnosisModel(db.Model):
     __tablename__ = "diagnosis"
-
     id = db.Column(db.Integer, primary_key=True)
-    axis_name = db.Column(db.String(12), unique=True, nullable=False)
+    axis_name = db.Column(db.String(12), nullable=False)
     participant_id = db.Column(db.Integer, db.ForeignKey('participants.id'), nullable=False)
     participant = db.relationship('ParticipantModel', backref='diagnosis')
     created_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)

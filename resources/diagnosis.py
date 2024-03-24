@@ -32,7 +32,7 @@ class DiagnosisType(MethodView):
                 abort(500, message=f"An error occurred while deleting the Diagnosis. {e}")
     
     
-       
+
     @jwt_required()
     @blp.arguments(DiagnosisSchema)
     @blp.response(200, DiagnosisSchema)
@@ -51,19 +51,19 @@ class DiagnosisType(MethodView):
 
 
 @blp.route("/diagnosis/participant/<string:participant_id>")
-class DiagnosisSchema(MethodView):
+class DiagnosisGetUser(MethodView):
     @jwt_required()
     @blp.response(200, DiagnosisSchema(many=True))
     def get(self,participant_id):
         return DiagnosisModel.query.filter_by(participant_id=participant_id).all()
     
 @blp.route("/diagnosis")
-class diagnosis_route(MethodView):
+class DiagnosisRoute(MethodView):
     @jwt_required()
     @blp.arguments(DiagnosisSchema)
     @blp.response(201, DiagnosisSchema)
     def post(self, diagnosis_data):
-        #return diagnosis_data["participant_id"]
+        
         diagnosis = DiagnosisModel(
             participant_id = diagnosis_data["participant_id"],
             axis_name = diagnosis_data["axis_name"],

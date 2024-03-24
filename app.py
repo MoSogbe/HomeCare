@@ -12,7 +12,7 @@ from resources.users import blp as UserBlueprint
 from resources.user_types import blp as UserTypeBlueprint
 from resources.company import blp as CompanyBlueprint
 from resources.service_category import blp as ServiceCategoryBlueprint
-from resources.services import blp as ServicesBlueprint
+from resources.services import blp as ServicesBlueprint 
 from resources.uom import blp as UOMBlueprint
 from resources.behavioral_status import blp as BStatusBlueprint
 from resources.medical_condition import blp as MedicalConditionBlueprint
