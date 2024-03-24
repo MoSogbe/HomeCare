@@ -26,6 +26,10 @@ from resources.scheduling import blp as SchedulingBlueprint
 from resources.participant_service_provider_history import blp as PSPHBlueprint
 from resources.diagnosis import blp as DiagnosisBlueprint
 from resources.medical_information import blp as MedicalInformationBlueprint
+from resources.eci import blp as ECIBlueprint
+from resources.case_manager import blp as CaseManagerBlueprint
+from resources.preferred_hospital import blp as PHBlueprint
+from resources.participant_physician import blp as PPBlueprint
 from blocklist import BLOCKLIST
 from flask_migrate import Migrate
 from flask_cors import CORS
@@ -128,6 +132,10 @@ def create_app(db_url=None):
     api.register_blueprint(PSPHBlueprint)
     api.register_blueprint(DiagnosisBlueprint)
     api.register_blueprint(MedicalInformationBlueprint)
+    api.register_blueprint(PPBlueprint)
+    api.register_blueprint(PHBlueprint)
+    api.register_blueprint(ECIBlueprint)
+    api.register_blueprint(CaseManagerBlueprint)
     api.register_blueprint(SchedulingBlueprint)
    
     return app

@@ -171,6 +171,41 @@ class MISchema(Schema):
     created_by = fields.Int(required=True)
     mi_name = fields.Str(required=True)
     
+class ECISchema(Schema):
+    id = fields.Int(dump_only=True)
+    participant_id = fields.Int(required=True)
+    created_by = fields.Int(required=True)
+    gaurdian_name = fields.Str(required=True)
+    gaurdian_phone = fields.Str(required=True)
+    gaurdian_address = fields.Str(required=True)
+    
+    
+class CaseManagerSchema(Schema):
+    id = fields.Int(dump_only=True)
+    participant_id = fields.Int(required=True)
+    created_by = fields.Int(required=True)
+    cm_name = fields.Str(required=True)
+    cm_phone = fields.Str(required=True)
+    cm_emergency_phone = fields.Str(required=True)
+    cm_address = fields.Str(required=True)
+    cm_fax = fields.Str(required=True)
+    cm_email_address = fields.Str(required=True)
+    
+class PreferredHospitalSchema(Schema):
+    id = fields.Int(dump_only=True)
+    participant_id = fields.Int(required=True)
+    created_by = fields.Int(required=True)
+    ph_name = fields.Str(required=True)
+    ph_address = fields.Str(required=True)
+    
+class ParticipantsPhysicianSchema(Schema):
+    id = fields.Int(dump_only=True)
+    participant_id = fields.Int(required=True)
+    created_by = fields.Int(required=True)
+    physician_name = fields.Str(required=True)
+    physician_phone = fields.Str(required=True)
+    physician_address = fields.Str(required=True)
+    
     
    
     
