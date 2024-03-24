@@ -54,12 +54,15 @@ class PHType(MethodView):
         return pp
 
 
-@blp.route("/participant-physician")
+@blp.route("/participant-physician/participant/<string:participant_id>")
 class PHList(MethodView):
     @jwt_required()
     @blp.response(200, ParticipantsPhysicianSchema(many=True))
-    def get(self):
-        return PPModel.query.all()
+    def get(self, participant_id):
+        return PPModel.query.filter_by(participant_id=participant_id).all()
+    
+@blp.route("/participant-physician")
+class PHPost(MethodView):
     @jwt_required()
     @blp.arguments(ParticipantsPhysicianSchema)
     @blp.response(201, ParticipantsPhysicianSchema)

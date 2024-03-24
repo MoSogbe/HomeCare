@@ -58,12 +58,15 @@ class CaseManagerType(MethodView):
         return case_manager
 
 
-@blp.route("/case-manager")
-class CaseManagerList(MethodView):
+@blp.route("/case-manager/participant/<string:participant_id>")
+class CaseManagerGet(MethodView):
     @jwt_required()
     @blp.response(200, CaseManagerSchema(many=True))
-    def get(self):
-        return CaseManagerModel.query.all()
+    def get(self,participant_id):
+        return CaseManagerModel.query.filter_by(participant_id=participant_id).all()
+    
+@blp.route("/case-manager")
+class CaseManagerList(MethodView):
     @jwt_required()
     @blp.arguments(CaseManagerSchema)
     @blp.response(201, CaseManagerSchema)

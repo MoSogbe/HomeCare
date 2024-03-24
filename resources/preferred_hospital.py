@@ -53,12 +53,15 @@ class PHType(MethodView):
         return ph
 
 
-@blp.route("/preferred-hospital")
+@blp.route("/preferred-hospital/participant/<string:participant_id>")
 class PHList(MethodView):
     @jwt_required()
     @blp.response(200, PreferredHospitalSchema(many=True))
-    def get(self):
-        return PHModel.query.all()
+    def get(self, participant_id):
+        return PHModel.query.filter_by(participant_id=participant_id).all()
+    
+@blp.route("/preferred-hospital")
+class PHList(MethodView):
     @jwt_required()
     @blp.arguments(PreferredHospitalSchema)
     @blp.response(201, PreferredHospitalSchema)

@@ -50,12 +50,15 @@ class DiagnosisType(MethodView):
         return diagnosis
 
 
-@blp.route("/diagnosis")
+@blp.route("/diagnosis/participant/<string:participant_id>")
 class DiagnosisSchema(MethodView):
     @jwt_required()
     @blp.response(200, DiagnosisSchema(many=True))
-    def get(self):
-        return DiagnosisModel.query.all()
+    def get(self,participant_id):
+        return DiagnosisModel.query.filter_by(participant_id=participant_id).all()
+    
+@blp.route("/diagnosis")
+class diagnosis_route(MethodView):
     @jwt_required()
     @blp.arguments(DiagnosisSchema)
     @blp.response(201, DiagnosisSchema)

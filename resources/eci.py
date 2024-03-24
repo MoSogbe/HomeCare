@@ -55,12 +55,15 @@ class ECIType(MethodView):
         return eci
 
 
-@blp.route("/emergency-contact-information")
+@blp.route("/emergency-contact-information/participant/<string:participant_id>")
 class ECIList(MethodView):
     @jwt_required()
     @blp.response(200, ECISchema(many=True))
-    def get(self):
-        return ECIModel.query.all()
+    def get(self,participant_id):
+        return ECIModel.query.filter_by(participant_id=participant_id).all()
+    
+@blp.route("/emergency-contact-information")
+class ECIPost(MethodView):
     @jwt_required()
     @blp.arguments(ECISchema)
     @blp.response(201, ECISchema)

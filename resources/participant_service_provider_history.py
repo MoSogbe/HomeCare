@@ -55,12 +55,15 @@ class PSHType(MethodView):
         return psh
 
 
-@blp.route("/participant-service-provider-history")
-class PSPHList(MethodView):
+@blp.route("/participant-service-provider-history/participant/<string:participant_id>")
+class PSPHParticipant(MethodView):
     @jwt_required()
     @blp.response(200, ParticipantServiceProviderHistorySchema(many=True))
-    def get(self):
-        return ParticipantServiceProviderHistoryModel.query.all()
+    def get(self, participant_id):
+        return ParticipantServiceProviderHistoryModel.query.filter_by(participant_id=participant_id).all()
+
+@blp.route("/participant-service-provider-history")
+class PSPHList(MethodView):
     @jwt_required()
     @blp.arguments(ParticipantServiceProviderHistorySchema)
     @blp.response(201, ParticipantServiceProviderHistorySchema)

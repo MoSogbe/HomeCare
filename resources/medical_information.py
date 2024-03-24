@@ -58,12 +58,14 @@ class MedicalInformationType(MethodView):
         return medical_information
 
 
-@blp.route("/medical-information")
+@blp.route("/medical-information/participant/<string:participant_id>")
 class MedicalInformationList(MethodView):
     @jwt_required()
     @blp.response(200, MISchema(many=True))
-    def get(self):
-        return MedicalInformationModel.query.all()
+    def get(self,participant_id):
+        return MedicalInformationModel.query.filter_by(participant_id=participant_id).all()
+@blp.route("/medical-information/participant/<string:participant_id>")
+class MedicalInformationPost(MethodView):
     @jwt_required()
     @blp.arguments(MISchema)
     @blp.response(201, MISchema)
