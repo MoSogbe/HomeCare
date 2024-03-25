@@ -4,9 +4,9 @@ from sqlalchemy.exc import SQLAlchemyError
 from flask_jwt_extended import get_jwt_identity, jwt_required, get_jwt
 from db import db
 from sqlalchemy import or_
-from models.mit import MITModel
+from models import MITModel,MedicalConditionModel
 from models.medical_information import MedicalInformationModel
-from schemas import MISchema,MITSchema
+from schemas import MISchema,MITSchema,MIViewSchema
 from datetime import datetime
 
 blp = Blueprint("Medical Information Model", "genders", description="Operations on Medical Information Model")
@@ -61,9 +61,12 @@ class MedicalInformationType(MethodView):
 @blp.route("/medical-information/participant/<string:participant_id>")
 class MedicalInformationList(MethodView):
     @jwt_required()
-    @blp.response(200, MISchema(many=True))
+    @blp.response(200, MIViewSchema(many=True))
     def get(self,participant_id):
-        return MedicalInformationModel.query.filter_by(participant_id=participant_id).all()
+        return MedicalInformationModel.query.join(MedicalConditionModel, MedicalInformationModel.medical_condition_id == MedicalConditionModel.id)\
+                               .with_entities(MedicalInformationModel.id, MedicalInformationModel.medical_condition_id, MedicalConditionModel.condition_name)\
+                               .filter_by(participant_id=participant_id)\
+                               .all()
     
 @blp.route("/medical-information")
 class MedicalInformationPost(MethodView):

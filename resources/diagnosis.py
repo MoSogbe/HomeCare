@@ -5,7 +5,7 @@ from flask_jwt_extended import get_jwt_identity, jwt_required, get_jwt
 from db import db
 from sqlalchemy import or_
 from models import DiagnosisModel, MedicalConditionModel
-from schemas import DiagnosisSchema
+from schemas import DiagnosisSchema,DiagnosisViewSchema
 from datetime import datetime
 
 blp = Blueprint("Diagnosis Model", "diagnosis", description="Operations on Diagnosis Model")
@@ -53,10 +53,12 @@ class DiagnosisType(MethodView):
 @blp.route("/diagnosis/participant/<string:participant_id>")
 class DiagnosisGetUser(MethodView):
     @jwt_required()
-    @blp.response(200, DiagnosisSchema(many=True))
+    @blp.response(200, DiagnosisViewSchema(many=True))
     def get(self,participant_id):
-        return DiagnosisModel.query.join(DiagnosisModel, DiagnosisModel.medical_condition_id == MedicalConditionModel.id).with_entities(DiagnosisModel.id,DiagnosisModel.medical_condition_id,
-              DiagnosisModel.condition_name).filter_by(participant_id=participant_id).all()
+        return DiagnosisModel.query.join(MedicalConditionModel, DiagnosisModel.medical_condition_id == MedicalConditionModel.id)\
+                               .with_entities(DiagnosisModel.id, DiagnosisModel.medical_condition_id, MedicalConditionModel.condition_name)\
+                               .filter_by(participant_id=participant_id)\
+                               .all()
     
     #StockModel.query.join(DrugModel, StockModel.drug_id == DrugModel.id).with_entities(StockModel.id,StockModel.transaction_code,StockModel.batch_code,StockModel.supplier_id,StockModel.drug_id,StockModel.quatity_received,StockModel.expiry_date,DrugModel.drug_name).all()
     
@@ -64,7 +66,7 @@ class DiagnosisGetUser(MethodView):
 class DiagnosisRoute(MethodView):
     @jwt_required()
     @blp.arguments(DiagnosisSchema)
-    @blp.response(201, DiagnosisSchema)
+    @blp.response(201, DiagnosisViewSchema)
     def post(self, diagnosis_data):
         
         diagnosis = DiagnosisModel(

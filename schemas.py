@@ -160,6 +160,12 @@ class DiagnosisSchema(Schema):
     participant_id = fields.Int(required=True)
     medical_condition_id = fields.Int(required=True)
     
+class DiagnosisViewSchema(Schema):
+    id = fields.Int(dump_only=True)
+    participant_id = fields.Int(required=True)
+    medical_condition_id = fields.Int(required=True)
+    condition_name = fields.Str(required=True)
+    
 class MITSchema(Schema):
     id = fields.Int(dump_only=True)
     mit_name = fields.Str(required=True)
@@ -170,6 +176,14 @@ class MISchema(Schema):
     participant_id = fields.Int(required=True)
     created_by = fields.Int(required=True)
     medical_condition_id = fields.Int(required=True)
+    
+class MIViewSchema(Schema):
+    id = fields.Int(dump_only=True)
+    mit_id = fields.Int(required=True)
+    participant_id = fields.Int(required=True)
+    created_by = fields.Int(required=True)
+    medical_condition_id = fields.Int(required=True)
+    condition_name = fields.String(required=True)
     
 class ECISchema(Schema):
     id = fields.Int(dump_only=True)
