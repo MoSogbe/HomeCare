@@ -206,6 +206,18 @@ class ParticipantsPhysicianSchema(Schema):
     physician_phone = fields.Str(required=True)
     physician_address = fields.Str(required=True)
     
+class DrugCategorySchema(Schema):
+    id = fields.Int(dump_only=True)
+    drug_category_name = fields.Str(required=True)
+
+class DrugSchema(Schema):
+    id = fields.Int(dump_only=True)
+    drug_category_id = fields.Str(required=True)
+    brand_name = fields.Str(required=True)
+    drug_name = fields.Str(required=True)
+    generic_name = fields.Str(required=True)
+    uom_id = fields.Str(required=True)
+    
     
    
     

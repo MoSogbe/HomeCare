@@ -21,3 +21,5 @@ from models.eci import ECIModel
 from models.case_manager import CaseManagerModel
 from models.preferred_hospital import PHModel
 from models.participant_physician import PPModel
+from models.drug_category import DrugCategoryModel
+from models.drugs import DrugModel
