@@ -4,7 +4,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from flask_jwt_extended import get_jwt_identity, jwt_required, get_jwt
 from db import db
 from sqlalchemy import or_
-from models.diagnosis import DiagnosisModel
+from models import DiagnosisModel, MedicalConditionModel
 from schemas import DiagnosisSchema
 from datetime import datetime
 
@@ -55,7 +55,10 @@ class DiagnosisGetUser(MethodView):
     @jwt_required()
     @blp.response(200, DiagnosisSchema(many=True))
     def get(self,participant_id):
-        return DiagnosisModel.query.filter_by(participant_id=participant_id).all()
+        return DiagnosisModel.query.join(DiagnosisModel, DiagnosisModel.medical_condition_id == MedicalConditionModel.id).with_entities(DiagnosisModel.id,DiagnosisModel.medical_condition_id,
+              DiagnosisModel.condition_name).filter_by(participant_id=participant_id).all()
+    
+    #StockModel.query.join(DrugModel, StockModel.drug_id == DrugModel.id).with_entities(StockModel.id,StockModel.transaction_code,StockModel.batch_code,StockModel.supplier_id,StockModel.drug_id,StockModel.quatity_received,StockModel.expiry_date,DrugModel.drug_name).all()
     
 @blp.route("/diagnosis")
 class DiagnosisRoute(MethodView):
@@ -66,7 +69,7 @@ class DiagnosisRoute(MethodView):
         
         diagnosis = DiagnosisModel(
             participant_id = diagnosis_data["participant_id"],
-            medication_condition_id = diagnosis_data["medication_condition_id"],
+            medical_condition_id = diagnosis_data["medical_condition_id"],
             created_by = get_jwt_identity(),
             created_at = datetime.now(),
             updated_at = datetime.now()
