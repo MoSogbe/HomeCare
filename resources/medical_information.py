@@ -72,7 +72,7 @@ class MedicalInformationPost(MethodView):
     @blp.response(201, MISchema)
     def post(self, mi_data):
         medical_information = MedicalInformationModel(
-            medication_condition_id = mi_data["medication_condition_id"],
+            medical_condition_id = mi_data["medical_condition_id"],
             participant_id = mi_data["participant_id"],
             created_by = get_jwt_identity(),
             created_at = datetime.now(),
