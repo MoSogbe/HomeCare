@@ -48,7 +48,7 @@ class MedicalInformationType(MethodView):
         medical_information = MITModel.query.get(mi_id)
 
         if medical_information:
-            medical_information.name = mi_data["name"]
+            medical_information.medication_condition_id = mi_data["medication_condition_id"]
         else:
             medical_information = MedicalInformationModel(id=mi_id, **mi_data)
 
@@ -72,7 +72,7 @@ class MedicalInformationPost(MethodView):
     @blp.response(201, MISchema)
     def post(self, mi_data):
         medical_information = MedicalInformationModel(
-            mi_name = mi_data["mi_name"],
+            medication_condition_id = mi_data["medication_condition_id"],
             participant_id = mi_data["participant_id"],
             created_by = get_jwt_identity(),
             created_at = datetime.now(),

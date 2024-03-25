@@ -23,3 +23,7 @@ from models.preferred_hospital import PHModel
 from models.participant_physician import PPModel
 from models.drug_category import DrugCategoryModel
 from models.drugs import DrugModel
+from models.supplier import SupplierModel
+from models.stock_total import StockTotalModel
+from models.stocks import StockModel
+from models.batch_num_records import BatchNumModel

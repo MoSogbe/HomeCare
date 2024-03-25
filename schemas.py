@@ -157,8 +157,8 @@ class ParticipantServiceProviderHistorySchema(Schema):
    
 class DiagnosisSchema(Schema):
     id = fields.Int(dump_only=True)
-    participant_id = fields.Str(required=True)
-    axis_name = fields.Str(required=True)
+    participant_id = fields.Int(required=True)
+    medical_condition_id = fields.Int(required=True)
     
 class MITSchema(Schema):
     id = fields.Int(dump_only=True)
@@ -169,7 +169,7 @@ class MISchema(Schema):
     mit_id = fields.Int(required=True)
     participant_id = fields.Int(required=True)
     created_by = fields.Int(required=True)
-    mi_name = fields.Str(required=True)
+    medical_condition_id = fields.Int(required=True)
     
 class ECISchema(Schema):
     id = fields.Int(dump_only=True)
@@ -218,6 +218,42 @@ class DrugSchema(Schema):
     generic_name = fields.Str(required=True)
     uom_id = fields.Str(required=True)
     
+class SupplierSchema(Schema):
+    id = fields.Int(dump_only=True)
+    supplier_name = fields.Str(required=True)
+    supplier_phone = fields.Str(required=True)
+    supplier_address = fields.Str(required=True)
+    supplier_contact_person = fields.Str(required=True)
+    supplier_balance = fields.Str(required=True)
+    
+class StockSchema(Schema):
+    id = fields.Int(dump_only=True)
+    transaction_code = fields.Str(required=True)
+    batch_code = fields.Str(required=True)
+    supplier_id = fields.Str(required=True)
+    drug_id = fields.Str(required=True)
+    quatity_received = fields.Str(required=True)
+    expiry_date = fields.Str(required=True)
+    
+class StockListSchema(Schema):
+    id = fields.Int(dump_only=True)
+    transaction_code = fields.Str(required=True)
+    batch_code = fields.Str(required=True)
+    supplier_id = fields.Str(required=True)
+    drug_id = fields.Str(required=True)
+    drug_name = fields.Str(required=True)
+    quatity_received = fields.Str(required=True)
+    expiry_date = fields.Str(required=True)
+    
+class StockTotalSchema(Schema):
+    id = fields.Int(dump_only=True)
+    total_qty = fields.Str(required=True)
+    drug_id = fields.Str(required=True)
+    
+class BatchNumSchema(Schema):
+    id = fields.Int(dump_only=True)
+    batch_num = fields.Str(required=True)
+    drug_id = fields.Str(required=True)
     
    
     

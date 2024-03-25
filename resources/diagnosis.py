@@ -40,7 +40,7 @@ class DiagnosisType(MethodView):
         diagnosis = DiagnosisModel.query.get(diagnosis_id)
 
         if diagnosis:
-            diagnosis.axis = diagnosis_data["axis"]
+            diagnosis.medication_condition_id = diagnosis_data["medication_condition_id"]
         else:
             diagnosis = DiagnosisModel(id=diagnosis_id, **diagnosis_data)
 
@@ -66,7 +66,7 @@ class DiagnosisRoute(MethodView):
         
         diagnosis = DiagnosisModel(
             participant_id = diagnosis_data["participant_id"],
-            axis_name = diagnosis_data["axis_name"],
+            medication_condition_id = diagnosis_data["medication_condition_id"],
             created_by = get_jwt_identity(),
             created_at = datetime.now(),
             updated_at = datetime.now()
