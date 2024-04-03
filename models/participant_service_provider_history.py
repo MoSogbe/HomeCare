@@ -16,15 +16,15 @@ class ParticipantServiceProviderHistoryModel(db.Model):
     service_type = db.relationship('ServiceModel', backref='participant_service_provider_history')
     user = db.relationship('UserModel', backref='participant_service_provider_history')
     
-    def serialize(self):
-        return {
-            'id': self.id,
-            'participant_id': self.participant_id,
-            'service_type_id':self.service_type_id,
-            'provider_name':self.provider_name,
-            'provider_address':self.provider_address,
-            'provider_phone':self.provider_phone,
-            'created_by':self.created_by
+    # def serialize(self):
+    #     return {
+    #         'id': self.id,
+    #         'participant_id': self.participant_id,
+    #         'service_type_id':self.service_type_id,
+    #         'provider_name':self.provider_name,
+    #         'provider_address':self.provider_address,
+    #         'provider_phone':self.provider_phone,
+    #         'created_by':self.created_by
             
             
-        }
+    #     }

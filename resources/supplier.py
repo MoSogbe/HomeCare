@@ -67,7 +67,7 @@ class SupplierList(MethodView):
         if SupplierModel.query.filter(
             or_
             (
-             SupplierModel.name==supplier_data["name"],
+             SupplierModel.supplier_name==supplier_data["supplier_name"],
            
              )).first():
             abort(409, message="A supplier with that name already exist")

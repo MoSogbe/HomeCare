@@ -40,7 +40,7 @@ class DiagnosisType(MethodView):
         diagnosis = DiagnosisModel.query.get(diagnosis_id)
 
         if diagnosis:
-            diagnosis.medication_condition_id = diagnosis_data["medication_condition_id"]
+            diagnosis.medical_condition_id = diagnosis_data["medical_condition_id"]
         else:
             diagnosis = DiagnosisModel(id=diagnosis_id, **diagnosis_data)
 

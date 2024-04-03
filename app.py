@@ -42,7 +42,6 @@ from flask_cors import CORS
 def create_app(db_url=None):
     app = Flask(__name__)
     load_dotenv()
-    
     CORS(app)
     app.config["API_TITLE"] = "HomeCare API"
     app.config["API_VERSION"] = "v1"
@@ -84,7 +83,7 @@ def create_app(db_url=None):
             ),
             401,
         )
-    
+        
     @jwt.additional_claims_loader
     def add_claims_to_jwt(identity):
         if identity==1:
@@ -118,8 +117,6 @@ def create_app(db_url=None):
             ),
             401,
         )
-        
-   
     api.register_blueprint(UserTypeBlueprint)
     api.register_blueprint(CompanyBlueprint)
     api.register_blueprint(UserBlueprint)

@@ -28,7 +28,7 @@ class PHType(MethodView):
             pp = PPModel.query.get_or_404(pp_id)
             db.session.delete(pp)
             db.session.commit()
-            return {"message": "Preferred Hospital  Type deleted."}
+            return {"message": "Preferred Pysician  Type deleted."}
         except SQLAlchemyError as e:
                 abort(500, message=f"An error occurred while deleting the Participant Pysician. {e}")
     

@@ -15,16 +15,16 @@ blp = Blueprint("Participant Service Provider History Model", "participant_servi
 class PSHType(MethodView):
     @jwt_required()
     @blp.response(200, ParticipantServiceProviderHistorySchema)
-    def get(self, psh_id):
-        psh = ParticipantServiceProviderHistoryModel.query.get_or_404(psh_id)
+    def get(self, psph_id):
+        psh = ParticipantServiceProviderHistoryModel.query.get_or_404(psph_id)
         return psh
     @jwt_required()
-    def delete(self, psh_id):
+    def delete(self, psph_id):
         jwt = get_jwt()
         # if not jwt.get("is_admin"):
         #     abort(401, message="Admin privillege is required")
         try:
-            psh = ParticipantServiceProviderHistoryModel.query.get_or_404(psh_id)
+            psh = ParticipantServiceProviderHistoryModel.query.get_or_404(psph_id)
             db.session.delete(psh)
             db.session.commit()
             return {"message": "Participant Service Provider History  Type deleted."}
@@ -36,8 +36,8 @@ class PSHType(MethodView):
     @jwt_required()
     @blp.arguments(ParticipantServiceProviderHistorySchema)
     @blp.response(200, ParticipantServiceProviderHistorySchema)
-    def put(self, psh_data, psh_id):
-        psh = ParticipantServiceProviderHistoryModel.query.get(psh_id)
+    def put(self, psh_data, psph_id):
+        psh = ParticipantServiceProviderHistoryModel.query.get(psph_id)
 
         if psh:
             psh.service_type_id = psh_data["service_type_id"]
@@ -47,7 +47,7 @@ class PSHType(MethodView):
             psh.provider_phone = psh_data["provider_phone"]
             psh.created_by = get_jwt_identity()
         else:
-            psh = ParticipantServiceProviderHistoryModel(id=psh_id, **psh_data)
+            psh = ParticipantServiceProviderHistoryModel(id=psph_id, **psh_data)
 
         db.session.add(psh)
         db.session.commit()

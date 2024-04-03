@@ -10,10 +10,10 @@ from models import ECIModel,CaseManagerModel, DiagnosisModel, MedicalInformation
 from schemas import ECISchema
 from datetime import datetime
 
-blp = Blueprint("Life Story Information", "eci", description="Operations on Life Story")
+blp = Blueprint("Face Sheet Information", "eci", description="Operations on Face Sheet")
 
 
-@blp.route("/life-story/participant/<string:participant_id>")
+@blp.route("/face-sheet/participant/<string:participant_id>")
 class ECIList(MethodView):
     @jwt_required()
     @blp.response(200, ECISchema(many=True))
