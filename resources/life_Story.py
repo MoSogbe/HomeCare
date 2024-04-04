@@ -33,11 +33,11 @@ class ECIList(MethodView):
         case_manager_serialized = [item.serialize() for item in case_manager]
         diagnosis_serialized = [item.serialize() for item in diagnosis]
         eci_serialized = [item.serialize() for item in eci]
-        mi_serialized = [item.serialize() for item in mi]
+        #mi_serialized = [item.serialize() for item in mi]
         psph_serialized = [item.serialize() for item in psph]
         pp_serialized = [item.serialize() for item in pp]
         ph_serialized = [item.serialize() for item in ph]
         
-        life_story_data.append({"case_manager":case_manager_serialized,"diagnosis":diagnosis_serialized, "emergency_contact_information":eci_serialized , "medical_information":mi_serialized, "participant_service_provider_history": psph_serialized, "participant_physician": pp_serialized, "preferred_hospital" : ph_serialized})
+        life_story_data.append({"case_manager":case_manager_serialized,"diagnosis":diagnosis_serialized, "emergency_contact_information":eci_serialized , "medical_information":mi, "participant_service_provider_history": psph_serialized, "participant_physician": pp_serialized, "preferred_hospital" : ph_serialized})
         return jsonify(life_story_data)
  
