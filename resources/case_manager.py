@@ -87,6 +87,6 @@ class CaseManagerList(MethodView):
             db.session.add(case_manager)
             db.session.commit()
         except SQLAlchemyError as e:
-            abort(500, message=f"An error occurred while inserting the ECI {e}.")
+            abort(500, message=f"An error occurred while inserting Case Manager {e}.")
 
         return case_manager

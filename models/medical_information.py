@@ -15,7 +15,8 @@ class MedicalInformationModel(db.Model):
         return {
             'id': self.id,
             'participant_id': self.participant_id,
-            'mi_name':self.mi_name,
+            'medical_condition_id' : self.medical_condition_id,
+            #'mi_name':self.mi_name,
             'created_by':self.created_by
             
             

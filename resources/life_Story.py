@@ -22,7 +22,6 @@ class ECIList(MethodView):
         eci =  ECIModel.query.filter_by(participant_id=participant_id).all()
         case_manager = CaseManagerModel.query.filter_by(participant_id=participant_id).all()
         diagnosis = DiagnosisModel.query.filter_by(participant_id=participant_id).all()
-        diagnosis = DiagnosisModel.query.filter_by(participant_id=participant_id).all()
         mi = MedicalInformationModel.query.filter_by(participant_id=participant_id).all()
         psph = ParticipantServiceProviderHistoryModel.query.filter_by(participant_id=participant_id).all()
         pp = PPModel.query.filter_by(participant_id=participant_id).all()
