@@ -27,9 +27,9 @@ class ParticipantType(MethodView):
             participant = ParticipantModel.query.get_or_404(participant_id)
             db.session.delete(participant)
             db.session.commit()
-            return {"message": "Staff Profile Type deleted."}
+            return {"message": "Participant Profile Type deleted."}
         except SQLAlchemyError as e:
-                abort(500, message=f"An error occurred while deleting the staff profile. {e}")
+                abort(500, message=f"An error occurred while deleting the Participant profile. {e}")
     
    
     @jwt_required()
@@ -66,7 +66,7 @@ class ParticipantList(MethodView):
              ParticipantModel.name==participant_data["name"],
            
              )).first():
-            abort(409, message="A staff with that name already exist")
+            abort(409, message="A Participant with that name already exist")
             # Handle photo upload
        
         

@@ -19,5 +19,4 @@ class MedicalInformationModel(db.Model):
             'mi_name':self.medical_condition.condition_name,
             'created_by':self.created_by
             
-            
         }
