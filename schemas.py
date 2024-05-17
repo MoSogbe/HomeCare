@@ -1,21 +1,21 @@
 from marshmallow import Schema, fields
 from datetime import datetime
- 
+
 
 class UserTypeSchema(Schema):
     id = fields.Int(dump_only=True)
     type_name = fields.Str(required=True)
     created_at = datetime.now()
     updated_at = datetime.now()
-    
+
 class UserTypeUpdateSchema(Schema):
     type_name = fields.Str(required=True)
-    
+
 class UserSchema(Schema):
     id = fields.Int(dump_only=True)
     username = fields.Str(required=True)
     password = fields.Str(required=True, load_only=True)
-    
+
 class FetchUserSchema(Schema):
     id = fields.Int(dump_only=True)
     fullname = fields.Str(required=True)
@@ -24,14 +24,14 @@ class FetchUserSchema(Schema):
 
 class UserListSchema(Schema):
     users = fields.Nested(FetchUserSchema, many=True)
-    
+
 class UserRegistersSchema(UserSchema):
     fullname = fields.Str(required=True)
     email = fields.Str(required=True)
     username = fields.Str(required=True)
     user_type = fields.Str(required=True)
-    
-    
+
+
 class CompanySchema(Schema):
     id = fields.Int(dump_only=True)
     name_of_company = fields.Str(required=True)
@@ -40,16 +40,16 @@ class CompanySchema(Schema):
     address = fields.Str(required=True)
     created_at = datetime.now()
     updated_at = datetime.now()
-    
+
 class ServiceCategorySchema(Schema):
     id = fields.Int(dump_only=True)
     category_name = fields.Str(required=True)
     created_at = datetime.now()
     updated_at = datetime.now()
-    
+
 class ServiceCategoryUpdateSchema(ServiceCategorySchema):
     category_name = fields.Str(required=True)
-    
+
 class ServiceSchema(Schema):
     id = fields.Int(dump_only=True)
     service_name = fields.Str(required=True)
@@ -59,36 +59,36 @@ class ServiceSchema(Schema):
     service_category = fields.Str(required=True)
     created_at = datetime.now()
     updated_at = datetime.now()
-    
+
 class ServiceUpdateSchema(Schema):
     service_name = fields.Str(required=True)
     service_price = fields.Str(required=True)
     service_charge_duration = fields.Str(required=True)
     service_charge_frequency = fields.Str(required=True)
     service_category = fields.Str(required=True)
-    
+
 class UoMSchema(Schema):
     id = fields.Int(dump_only=True)
     unit_name = fields.Str(required=True)
     symbol = fields.Str(required=True)
-    
+
 class BStatusSchema(Schema):
     id = fields.Int(dump_only=True)
     status = fields.Str(required=True)
-    
+
 class MedicalConditionSchema(Schema):
     id = fields.Int(dump_only=True)
     condition_name = fields.Str(required=True)
-    
+
 class GenderSchema(Schema):
     id = fields.Int(dump_only=True)
     name = fields.Str(required=True)
-    
+
 class BioTitleSchema(Schema):
     id = fields.Int(dump_only=True)
     bio_name = fields.Str(required=True)
-    
-    
+
+
 class StaffSchema(Schema):
     id = fields.Int(dump_only=True)
     name = fields.Str(required=True)
@@ -100,7 +100,7 @@ class StaffSchema(Schema):
     bio_title_id = fields.Str(required=True)
     user_id = fields.Str(required=True)
     profile_image = fields.Str(required=True)
-    
+
 class ParticipantSchema(Schema):
     id = fields.Int(dump_only=True)
     name = fields.Str(required=True)
@@ -113,23 +113,23 @@ class ParticipantSchema(Schema):
     gender_id = fields.Str(required=True)
     bio_title_id = fields.Str(required=True)
     profile_image = fields.Str(required=True)
-         
+
 class LocationSchema(Schema):
     id = fields.Int(dump_only=True)
     location_name = fields.Str(required=True)
-    
+
 class LocationUpdateSchema(Schema):
     location_name = fields.Str(required=True)
-    
+
 class SchedulePeriodSchema(Schema):
     id = fields.Int(dump_only=True)
     start_time = fields.Str(required=True)
     end_time = fields.Str(required=True)
-    
+
 class SchedulePeriodUpdateSchema(Schema):
     start_time = fields.Str(required=True)
     end_time = fields.Str(required=True)
-    
+
 class SchedulingSchema(Schema):
     id = fields.Int(dump_only=True)
     location_id = fields.Str(required=True)
@@ -140,7 +140,7 @@ class SchedulingSchema(Schema):
     day_of_week = fields.Str(required=True)
     month = fields.Str(required=True)
     year = fields.Str(required=True)
-    
+
 class SchedulingReport(Schema):
     id = fields.Int(dump_only=True)
     start_date = fields.Str(required=True)
@@ -154,29 +154,29 @@ class ParticipantServiceProviderHistorySchema(Schema):
     provider_name = fields.Str(required=True)
     provider_address = fields.Str(required=True)
     provider_phone = fields.Str(required=True)
-   
+
 class DiagnosisSchema(Schema):
     id = fields.Int(dump_only=True)
     participant_id = fields.Int(required=True)
     medical_condition_id = fields.Int(required=True)
-    
+
 class DiagnosisViewSchema(Schema):
     id = fields.Int(dump_only=True)
     participant_id = fields.Int(required=True)
     medical_condition_id = fields.Int(required=True)
     condition_name = fields.Str(required=True)
-    
+
 class MITSchema(Schema):
     id = fields.Int(dump_only=True)
     mit_name = fields.Str(required=True)
-    
+
 class MISchema(Schema):
     id = fields.Int(dump_only=True)
     mit_id = fields.Int(required=True)
     participant_id = fields.Int(required=True)
     created_by = fields.Int(required=True)
     medical_condition_id = fields.Int(required=True)
-    
+
 class MIViewSchema(Schema):
     id = fields.Int(dump_only=True)
     mit_id = fields.Int(required=True)
@@ -184,7 +184,7 @@ class MIViewSchema(Schema):
     created_by = fields.Int(required=True)
     medical_condition_id = fields.Int(required=True)
     condition_name = fields.String(required=True)
-    
+
 class ECISchema(Schema):
     id = fields.Int(dump_only=True)
     participant_id = fields.Int(required=True)
@@ -192,8 +192,8 @@ class ECISchema(Schema):
     gaurdian_name = fields.Str(required=True)
     gaurdian_phone = fields.Str(required=True)
     gaurdian_address = fields.Str(required=True)
-    
-    
+
+
 class CaseManagerSchema(Schema):
     id = fields.Int(dump_only=True)
     participant_id = fields.Int(required=True)
@@ -204,14 +204,14 @@ class CaseManagerSchema(Schema):
     cm_address = fields.Str(required=True)
     cm_fax = fields.Str(required=True)
     cm_email_address = fields.Str(required=True)
-    
+
 class PreferredHospitalSchema(Schema):
     id = fields.Int(dump_only=True)
     participant_id = fields.Int(required=True)
     created_by = fields.Int(required=True)
     ph_name = fields.Str(required=True)
     ph_address = fields.Str(required=True)
-    
+
 class ParticipantsPhysicianSchema(Schema):
     id = fields.Int(dump_only=True)
     participant_id = fields.Int(required=True)
@@ -219,7 +219,7 @@ class ParticipantsPhysicianSchema(Schema):
     physician_name = fields.Str(required=True)
     physician_phone = fields.Str(required=True)
     physician_address = fields.Str(required=True)
-    
+
 class DrugCategorySchema(Schema):
     id = fields.Int(dump_only=True)
     drug_category_name = fields.Str(required=True)
@@ -231,7 +231,7 @@ class DrugSchema(Schema):
     drug_name = fields.Str(required=True)
     generic_name = fields.Str(required=True)
     uom_id = fields.Str(required=True)
-    
+
 class SupplierSchema(Schema):
     id = fields.Int(dump_only=True)
     supplier_name = fields.Str(required=True)
@@ -239,16 +239,16 @@ class SupplierSchema(Schema):
     supplier_address = fields.Str(required=True)
     supplier_contact_person = fields.Str(required=True)
     supplier_balance = fields.Str(required=True)
-    
+
 class StockSchema(Schema):
     id = fields.Int(dump_only=True)
     transaction_code = fields.Str(required=True)
     batch_code = fields.Str(required=True)
     supplier_id = fields.Str(required=True)
     drug_id = fields.Str(required=True)
-    quatity_received = fields.Str(required=True)
+    quantity_received = fields.Str(required=True)
     expiry_date = fields.Str(required=True)
-    
+
 class StockListSchema(Schema):
     id = fields.Int(dump_only=True)
     transaction_code = fields.Str(required=True)
@@ -256,20 +256,19 @@ class StockListSchema(Schema):
     supplier_id = fields.Str(required=True)
     drug_id = fields.Str(required=True)
     drug_name = fields.Str(required=True)
-    quatity_received = fields.Str(required=True)
+    quantity_received = fields.Str(required=True)
     expiry_date = fields.Str(required=True)
-    
+
 class StockTotalSchema(Schema):
     id = fields.Int(dump_only=True)
     total_qty = fields.Str(required=True)
     drug_id = fields.Str(required=True)
-    
+
 class BatchNumSchema(Schema):
     id = fields.Int(dump_only=True)
     batch_num = fields.Str(required=True)
     drug_id = fields.Str(required=True)
-    
-   
-    
-    
-    
+
+
+
+

@@ -4,8 +4,8 @@ from sqlalchemy.exc import SQLAlchemyError
 from flask_jwt_extended import get_jwt_identity, jwt_required, get_jwt
 from db import db
 from sqlalchemy import or_
-from models.drugs import DrugModel
-from schemas import DrugSchema
+from models import DrugModel,StockTotalModel
+from schemas import DrugSchema, StockTotalSchema
 from datetime import datetime
 
 blp = Blueprint("Drugs", "drugs", description="Operations on Drugs")
@@ -30,8 +30,8 @@ class DrugsType(MethodView):
             return {"message": "Drug Type deleted."}
         except SQLAlchemyError as e:
                 abort(500, message=f"An error occurred while deleting the drug. {e}")
-    
-   
+
+
     @jwt_required()
     @blp.arguments(DrugSchema)
     @blp.response(200, DrugSchema)
@@ -67,7 +67,7 @@ class DrugList(MethodView):
             or_
             (
              DrugModel.drug_name==drug_data["drug_name"],
-           
+
              )).first():
             abort(409, message="A drug with that name already exist")
         drug = DrugModel(
@@ -82,6 +82,15 @@ class DrugList(MethodView):
         try:
             db.session.add(drug)
             db.session.commit()
+            # If drug insert is successful, insert into StockTotal
+            stock_total = StockTotalModel(
+                total_qty="0",
+                drug_id=drug.id,
+                created_at = datetime.now(),
+                updated_at = datetime.now()
+            )
+            db.session.add(stock_total)
+            db.session.commit()  # Commit the stock total insert
         except SQLAlchemyError as e:
             abort(500, message=f"An error occurred while inserting the Drug.{e}.")
 

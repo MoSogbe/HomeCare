@@ -9,6 +9,7 @@ from models import DrugModel,StockModel,SupplierModel,StockTotalModel,BatchNumMo
 from models.medical_information import MedicalInformationModel
 from schemas import DrugSchema, SupplierSchema, StockSchema,StockListSchema
 from datetime import datetime
+import random
 
 blp = Blueprint("Stock Management Model", "stocks", description="Operations on Stock Management Model")
 
@@ -20,7 +21,7 @@ class Supplier_Autosuggest(MethodView):
         supplier = SupplierModel.query.filter(SupplierModel.supplier_name.ilike(f'%{supplier_name}%')).all()
         supplier_dicts = [{'id': model.id, 'supplier_name': model.supplier_name} for model in supplier]
         return jsonify(supplier_dicts)
-    
+
 @blp.route("/drugs/<string:drug_name>")
 class Drugs_Autosuggest(MethodView):
     @jwt_required()
@@ -29,8 +30,8 @@ class Drugs_Autosuggest(MethodView):
         drugs = DrugModel.query.filter(DrugModel.drug_name.ilike(f'%{drug_name}%')).all()
         drug_dicts = [{'id': model.id, 'drug_name': model.drug_name} for model in drugs]
         return jsonify(drug_dicts)
-                
-                
+
+
 @blp.route("/stocks/<string:mi_id>")
 class MedicalInformationType(MethodView):
     @jwt_required()
@@ -50,9 +51,9 @@ class MedicalInformationType(MethodView):
             return {"message": "Medical Condition  Type deleted."}
         except SQLAlchemyError as e:
                 abort(500, message=f"An error occurred while deleting the Medical Condition. {e}")
-    
-    
-       
+
+
+
     @jwt_required()
     @blp.arguments(StockSchema)
     @blp.response(200, StockSchema)
@@ -70,35 +71,50 @@ class MedicalInformationType(MethodView):
         return medical_information
 
 
-@blp.route("/medical-information/participant/<string:participant_id>")
-class MedicalInformationList(MethodView):
-    @jwt_required()
-    @blp.response(200, StockSchema(many=True))
-    def get(self,participant_id):
-        return MedicalInformationModel.query.filter_by(participant_id=participant_id).all()
-    
 @blp.route("/stocks")
 class StocksRoute(MethodView):
     @jwt_required()
     @blp.response(200, StockListSchema(many=True))
     def get(self):
-        return  StockModel.query.join(DrugModel, StockModel.drug_id == DrugModel.id).with_entities(StockModel.id,StockModel.transaction_code,StockModel.batch_code,StockModel.supplier_id,StockModel.drug_id,StockModel.quatity_received,StockModel.expiry_date,DrugModel.drug_name).all()
-    
+        return  StockModel.query.join(DrugModel, StockModel.drug_id == DrugModel.id).with_entities(StockModel.id,StockModel.transaction_code,StockModel.batch_code,StockModel.supplier_id,StockModel.drug_id,StockModel.quantity_received,StockModel.expiry_date,DrugModel.drug_name).all()
+
     @jwt_required()
     @blp.arguments(StockSchema)
     @blp.response(201, StockSchema)
     def post(self, stock_data):
-        stocks = MedicalInformationModel(
-            mi_name = stock_data["mi_name"],
-            participant_id = stock_data["participant_id"],
-            created_by = get_jwt_identity(),
+        digits = ''.join([str(random.randint(0, 9)) for _ in range(9)])
+        stocks = StockModel(
+            transaction_code = stock_data["transaction_code"],
+            batch_code = stock_data["batch_code"],
+            supplier_id = stock_data["supplier_id"],
+            drug_id = stock_data["drug_id"],
+            quantity_received = stock_data["quantity_received"],
+            expiry_date = stock_data["expiry_date"],
+            #created_by = get_jwt_identity(),
             created_at = datetime.now(),
             updated_at = datetime.now()
         )
         try:
             db.session.add(stocks)
             db.session.commit()
+            # Update StockTotal
+            stock_total = StockTotalModel.query.filter_by(drug_id=stock_data["drug_id"]).first()
+            if stock_total:
+                # Update existing stock total
+                stock_total.total_qty = str(int(stock_total.total_qty) + int(stock_data["quantity_received"]))
+                stock_total.updated_at = datetime.now()
+            # else:
+            #     # Create new stock total entry if it doesn't exist
+            #     stock_total = StockTotalModel(
+            #         total_qty=stock_data["quantity_received"],
+            #         drug_id=stock_data["drug_id"],
+            #         created_at=datetime.now(),
+            #         updated_at=datetime.now()
+            #     )
+                db.session.add(stock_total)
+
+            db.session.commit()  # Commit the stock total update
         except SQLAlchemyError as e:
-            abort(500, message=f"An error occurred while inserting the Medical Information {e}.")
+            abort(500, message=f"An error occurred while inserting the Stock Information {e}.")
 
         return stocks

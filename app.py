@@ -7,12 +7,12 @@ import os
 import redis
 from rq import Queue
 from db import db
-from dotenv import load_dotenv 
+from dotenv import load_dotenv
 from resources.users import blp as UserBlueprint
 from resources.user_types import blp as UserTypeBlueprint
 from resources.company import blp as CompanyBlueprint
 from resources.service_category import blp as ServiceCategoryBlueprint
-from resources.services import blp as ServicesBlueprint 
+from resources.services import blp as ServicesBlueprint
 from resources.uom import blp as UOMBlueprint
 from resources.behavioral_status import blp as BStatusBlueprint
 from resources.medical_condition import blp as MedicalConditionBlueprint
@@ -51,7 +51,7 @@ def create_app(db_url=None):
     app.config[
         "OPENAPI_SWAGGER_UI_URL"
     ] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
-    app.config["SQLALCHEMY_DATABASE_URI"] = db_url or os.getenv("DATABASE_URL",f"mysql://homydb:<nikky/>@72.167.59.130:3306/homecaredb")
+    app.config["SQLALCHEMY_DATABASE_URI"] = db_url or os.getenv("DATABASE_URL",f"mysql://root:123456@localhost/homecare")
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["PROPAGATE_EXCEPTIONS"] = True
     app.config['UPLOADED_PHOTOS_DEST'] = 'uploads'
@@ -65,7 +65,7 @@ def create_app(db_url=None):
     @jwt.token_in_blocklist_loader
     def check_if_token_in_blocklist(jwt_header,jwt_payload):
         return jwt_payload["jti"] in BLOCKLIST
-    
+
     @jwt.revoked_token_loader
     def revoked_token_callback(jwt_header, jwt_payload):
         return(
@@ -74,7 +74,7 @@ def create_app(db_url=None):
             ),
             401,
         )
-        
+
     @jwt.needs_fresh_token_loader
     def token_not_fresh_callback(jwt_header,jwt_payload):
         return (
@@ -83,13 +83,13 @@ def create_app(db_url=None):
             ),
             401,
         )
-        
+
     @jwt.additional_claims_loader
     def add_claims_to_jwt(identity):
         if identity==1:
             return {"is_admin" : True}
         return {"is_admin":False}
-    
+
     @jwt.expired_token_loader
     def expired_token_callback(jwt_header, jwt_payload):
         return (
@@ -144,5 +144,5 @@ def create_app(db_url=None):
     api.register_blueprint(DrugCategoryBlueprint)
     api.register_blueprint(DrugBlueprint)
     api.register_blueprint(StockMgmtBlueprint)
-    
+
     return app
