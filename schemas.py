@@ -269,6 +269,58 @@ class BatchNumSchema(Schema):
     batch_num = fields.Str(required=True)
     drug_id = fields.Str(required=True)
 
+class ReportRequestSchema(Schema):
+    category_id = fields.Integer()
+    product_id = fields.Integer()
+
+class ReportResponseSchema(Schema):
+    category_id = fields.Integer()
+    category_name = fields.String()
+    product_id = fields.Integer()
+    product_name = fields.String()
+    total_stock = fields.Integer()
+
+class InvoiceSpecificRequestSchema(Schema):
+    transaction_code = fields.String()
+
+class InvoiceSpecificResponseSchema(Schema):
+    transaction_code = fields.String()
+    batch_code = fields.String()
+    quantity_received = fields.String()
+    expiry_date = fields.DateTime()
+    drug_name = fields.String()
+    supplier_name = fields.String()
+    supplier_phone = fields.String()
+    supplier_address = fields.String()
+    supplier_contact_person = fields.String()
+
+class PrescriptionSchema(Schema):
+    id = fields.Int(dump_only=True)
+    participant_id = fields.Int(required=True)
+    drug_id = fields.Int(required=True)
+    reason_for_medication = fields.Str(required=True)
+    mar_date = fields.Str(required=True)
+    mar_time = fields.Str(required=True)
+    date_from = fields.Str(required=True)
+    date_to = fields.Str(required=True)
+    place_of_mar = fields.Str(required=True)
+    dossage = fields.Str(required=True)
+    comment = fields.Str(required=True)
+
+
+class PrescriptionUpdateSchema(Schema):
+    id = fields.Int(dump_only=True)
+    participant_id = fields.Int(required=True)
+    drug_id = fields.Int(required=True)
+    reason_for_medication = fields.Str(required=True)
+    mar_date = fields.Str(required=True)
+    mar_time = fields.Str(required=True)
+    date_from = fields.Str(required=True)
+    date_to = fields.Str(required=True)
+    place_of_mar = fields.Str(required=True)
+    dossage = fields.Str(required=True)
+    comment = fields.Str(required=True)
+    #created_by = fields.Int(required=True)
 
 
 

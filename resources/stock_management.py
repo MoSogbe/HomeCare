@@ -1,13 +1,13 @@
 from flask.views import MethodView
-from flask import jsonify
+from flask import jsonify, request
 from flask_smorest import Blueprint, abort
 from sqlalchemy.exc import SQLAlchemyError
 from flask_jwt_extended import get_jwt_identity, jwt_required, get_jwt
 from db import db
 from sqlalchemy import or_,join
-from models import DrugModel,StockModel,SupplierModel,StockTotalModel,BatchNumModel
+from models import DrugModel,StockModel,SupplierModel,StockTotalModel,BatchNumModel,DrugCategoryModel
 from models.medical_information import MedicalInformationModel
-from schemas import DrugSchema, SupplierSchema, StockSchema,StockListSchema
+from schemas import DrugSchema, SupplierSchema, StockSchema,StockListSchema,ReportRequestSchema,ReportResponseSchema,InvoiceSpecificResponseSchema,InvoiceSpecificRequestSchema
 from datetime import datetime
 import random
 
@@ -33,7 +33,7 @@ class Drugs_Autosuggest(MethodView):
 
 
 @blp.route("/stocks/<string:mi_id>")
-class MedicalInformationType(MethodView):
+class StockType(MethodView):
     @jwt_required()
     @blp.response(200, StockSchema)
     def get(self, mi_id):
@@ -118,3 +118,95 @@ class StocksRoute(MethodView):
             abort(500, message=f"An error occurred while inserting the Stock Information {e}.")
 
         return stocks
+
+@blp.route("/stocks/inventory-reports")
+class StocksReportRoute(MethodView):
+    @jwt_required()
+    @blp.arguments(ReportRequestSchema)
+    @blp.response(200, ReportResponseSchema(many=True))
+    def post(self,data):
+        data = request.get_json()
+        category_id = data['category_id']
+        product_id = data['product_id']
+
+        query = db.session.query(
+            DrugCategoryModel.id.label('category_id'),
+            DrugCategoryModel.drug_category_name.label('category_name'),
+            DrugModel.id.label('product_id'),
+            DrugModel.drug_name.label('product_name'),
+            StockTotalModel.total_qty.label('total_stock')
+        ).join(
+            DrugModel, DrugCategoryModel.id == DrugModel.drug_category_id
+        ).join(
+            StockTotalModel, DrugModel.id == StockTotalModel.drug_id
+        )
+
+        # Adjust query based on category_id and product_id
+        if category_id != 0:
+            query = query.filter(DrugCategoryModel.id == category_id)
+        if product_id != 0:
+            query = query.filter(DrugModel.id == product_id)
+
+        report = query.all()
+
+        if not report:
+            abort(404, message="No report found for the given category_id and product_id")
+
+        # Prepare the result
+        results = []
+        for item in report:
+            results.append({
+                "category_id": item.category_id,
+                "category_name": item.category_name,
+                "product_id": item.product_id,
+                "product_name": item.product_name,
+                "total_stock": item.total_stock
+            })
+
+        return jsonify(results), 200
+
+
+@blp.route("/stocks/invoice-specific-reports")
+class InvoiceSpecificReport(MethodView):
+    @jwt_required()
+    @blp.arguments(InvoiceSpecificRequestSchema)
+    @blp.response(200, InvoiceSpecificResponseSchema(many=True))
+    def post(self, args):
+        transaction_code = args['transaction_code']
+        report = db.session.query(
+            StockModel.transaction_code,
+            StockModel.batch_code,
+            StockModel.quantity_received,
+            StockModel.expiry_date,
+            DrugModel.drug_name,
+            SupplierModel.supplier_name,
+            SupplierModel.supplier_phone,
+            SupplierModel.supplier_address,
+            SupplierModel.supplier_contact_person
+        ).join(
+            DrugModel, StockModel.drug_id == DrugModel.id
+        ).join(
+            SupplierModel, StockModel.supplier_id == SupplierModel.id
+        ).filter(
+            StockModel.transaction_code == transaction_code
+        ).all()
+
+        if not report:
+            abort(404, message="No report found for the given transaction code")
+
+        # Prepare the result
+        results = []
+        for item in report:
+            results.append({
+                "transaction_code": item.transaction_code,
+                "batch_code": item.batch_code,
+                "quantity_received": item.quantity_received,
+                "expiry_date": item.expiry_date,
+                "drug_name": item.drug_name,
+                "supplier_name": item.supplier_name,
+                "supplier_phone": item.supplier_phone,
+                "supplier_address": item.supplier_address,
+                "supplier_contact_person": item.supplier_contact_person
+            })
+
+        return jsonify(results), 200

@@ -35,6 +35,9 @@ from resources.drug_category import blp as DrugCategoryBlueprint
 from resources.drugs import blp as DrugBlueprint
 from resources.supplier import blp as SupplierBlueprint
 from resources.stock_management import blp as StockMgmtBlueprint
+from resources.prescription import blp as PrescriptionBlueprint
+from resources.vitals import blp as VitalsBlueprint
+from resources.daily_notes import blp as DailyNoteBluePrint
 from blocklist import BLOCKLIST
 from flask_migrate import Migrate
 from flask_cors import CORS
@@ -144,5 +147,8 @@ def create_app(db_url=None):
     api.register_blueprint(DrugCategoryBlueprint)
     api.register_blueprint(DrugBlueprint)
     api.register_blueprint(StockMgmtBlueprint)
+    api.register_blueprint(PrescriptionBlueprint)
+    api.register_blueprint(VitalsBlueprint)
+    api.register_blueprint(DailyNoteBluePrint)
 
     return app

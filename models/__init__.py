@@ -27,3 +27,6 @@ from models.supplier import SupplierModel
 from models.stock_total import StockTotalModel
 from models.stocks import StockModel
 from models.batch_num_records import BatchNumModel
+from models.prescription import PrescriptionModel
+from models.vitals import VitalsModel
+from models.daily_notes import DailyNotesModel
