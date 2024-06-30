@@ -16,8 +16,8 @@ blp = Blueprint("Participant Prescription", "prescriptions", description="Operat
 class MarType(MethodView):
     @jwt_required()
     @blp.response(200, PrescriptionSchema(many=True))
-    def get(self, participant):
-        participant = PrescriptionModel.query.filter_by(participant_id=participant).all()
+    def get(self, participant_id):
+        participant = PrescriptionModel.query.filter_by(participant_id=participant_id).all()
         return participant
 @blp.route("/mar/<string:mar_id>")
 class MarUpdate(MethodView):

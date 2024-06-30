@@ -17,8 +17,8 @@ blp = Blueprint("Participant Vitals", "vitals", description="Operations on Parti
 class VitalsGet(MethodView):
     @jwt_required()
     @blp.response(200, VitalsSchema(many=True))
-    def get(self, participant):
-        participant = VitalsModel.query.filter_by(participant_id=participant).all()
+    def get(self, participant_id):
+        participant = VitalsModel.query.filter_by(participant_id=participant_id).all()
         return participant
 @blp.route("/vitals/<string:vitals_id>")
 class VitalsUpdate(MethodView):
