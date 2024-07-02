@@ -5,5 +5,12 @@ class DailyNoteSchema(Schema):
     id = fields.Int(dump_only=True)
     participant_id = fields.Int(required=True)
     comment = fields.Str(required=True)
-    reviewed_by = fields.Int()
+    reviewer_comment = fields.Str()  # New field for reviewer's comment
+    participant_name = fields.String()
+    created_by_username = fields.String()
+    reviewed_by_username = fields.String()
+
+class UpdateDailyNoteSchema(Schema):
+    reviewer_comment = fields.Str(required=True)
+    reviewed_by = fields.Int(required=True)
 
