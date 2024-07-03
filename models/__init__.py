@@ -30,3 +30,4 @@ from models.batch_num_records import BatchNumModel
 from models.prescription import PrescriptionModel
 from models.vitals import VitalsModel
 from models.daily_notes import DailyNotesModel
+from models.log_entry import LogEntryModel
