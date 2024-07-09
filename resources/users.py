@@ -21,12 +21,12 @@ class Users(MethodView):
     @jwt_required()
     #@blp.response(200, FetchUserSchema(many=True))
     def get(self):
-        
+
         users = UserModel.query.all()
         user_list_schema = UserListSchema()
         result = user_list_schema.dump({'users': users})
         return result
-        
+
 
 
 @blp.route("/login")
@@ -37,7 +37,7 @@ class UserLogin(MethodView):
         if user and pbkdf2_sha256.verify(user_data["password"], user.password):
             access_token = create_access_token(identity=user.id, fresh=True)
             refresh_token = create_refresh_token(identity=user.id)
-            user_dict = {"id": user.id, "username": user.username, "email": user.email}
+            user_dict = {"id": user.id, "username": user.username, "email": user.email, "user_group":user.user_type_id}
             return {"access_token": access_token, "refresh_token" : refresh_token, "user":user_dict}
         abort(401,message="Invalid Credentials")
 
@@ -47,10 +47,10 @@ class   TokenRefresh(MethodView):
     def post(self):
         current_user = get_jwt_identity()
         new_token = create_access_token(identity=current_user, fresh=False)
-        
+
         return {"access_token": new_token}
-        
-    
+
+
 
 @blp.route("/logout")
 class UserLogout(MethodView):
@@ -85,7 +85,7 @@ class UserRegister(MethodView):
             db.session.add(user)
             db.session.commit()
         except SQLAlchemyError as e:
-            abort(500, message=f"An error occurred while inserting the user type. {e}")    
+            abort(500, message=f"An error occurred while inserting the user type. {e}")
         return {"message": "User created successfully"}, 201
 
 @blp.route("/user/<int:user_id>")
@@ -94,10 +94,9 @@ class User(MethodView):
     def get(self, user_id):
         user = UserModel.query.get_or_404(user_id)
         return user
-    
+
     def delete(self, user_id):
         user = UserModel.query.get_or_404(user_id)
         db.session.delete(user)
         db.session.commit()
-        return {"message": "User deleted"}, 200        
-        
+        return {"message": "User deleted"}, 200
