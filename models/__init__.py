@@ -31,3 +31,4 @@ from models.prescription import PrescriptionModel
 from models.vitals import VitalsModel
 from models.daily_notes import DailyNotesModel
 from models.log_entry import LogEntryModel
+from models.mar_administration import AdministrationModel

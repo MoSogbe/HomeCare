@@ -305,6 +305,8 @@ class PrescriptionSchema(Schema):
     date_to = fields.Str(required=True)
     place_of_mar = fields.Str(required=True)
     dossage = fields.Str(required=True)
+    frequency = fields.Int(required=True)
+    qty = fields.Int(required=True)
     comment = fields.Str(required=True)
 
 
@@ -318,9 +320,16 @@ class PrescriptionUpdateSchema(Schema):
     date_from = fields.Str(required=True)
     date_to = fields.Str(required=True)
     place_of_mar = fields.Str(required=True)
-    dossage = fields.Str(required=True)
+    dossage = fields.Str(required=False)
+    frequency = fields.Int(required=True)
+    qty = fields.Int(required=True)
     comment = fields.Str(required=True)
     #created_by = fields.Int(required=True)
+
+class PrescriptionQuerySchema(Schema):
+    date_from = fields.DateTime(required=True)
+    date_to = fields.DateTime(required=True)
+
 
 
 

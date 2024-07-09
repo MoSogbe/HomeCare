@@ -11,6 +11,9 @@ class PrescriptionModel(db.Model):
     date_to = db.Column(db.String(24), nullable=False)
     place_of_mar = db.Column(db.String(125))
     dossage = db.Column(db.String(125), nullable=False)
+    frequency = db.Column(db.Integer, nullable=True)
+    qty = db.Column(db.Integer, nullable=True)
+    todays_frequency = db.Column(db.Integer, nullable=False, default=0)
     comment = db.Column(db.String(225))
     drug = db.relationship('DrugModel', backref='prescriptions')
     participant_id = db.Column(db.Integer, db.ForeignKey('participants.id'), nullable=False)
@@ -19,3 +22,6 @@ class PrescriptionModel(db.Model):
     user = db.relationship('UserModel', backref='prescriptions')
     created_at = db.Column(db.DateTime(), nullable=False)
     updated_at = db.Column(db.DateTime(), nullable=False)
+
+
+    administrations = db.relationship("AdministrationModel", backref="prescriptions")

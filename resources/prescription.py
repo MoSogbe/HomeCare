@@ -4,57 +4,82 @@ from flask_smorest import Blueprint, abort
 from sqlalchemy.exc import SQLAlchemyError
 from flask_jwt_extended import get_jwt_identity, jwt_required, get_jwt
 from db import db
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
 from models.participant import ParticipantModel
 from models.prescription import PrescriptionModel
-from schemas import ParticipantSchema, PrescriptionSchema,PrescriptionUpdateSchema
-from datetime import datetime
+from models.mar_administration import AdministrationModel
+from schemas import ParticipantSchema, PrescriptionSchema, PrescriptionUpdateSchema, PrescriptionQuerySchema
+from datetime import datetime, date
 
 blp = Blueprint("Participant Prescription", "prescriptions", description="Operations on Participant Prescription or MAR")
 
-@blp.route("/mar/<string:participant_id>")
+def reset_todays_frequency():
+    today = date.today()
+    prescriptions = PrescriptionModel.query.all()
+    for prescription in prescriptions:
+        if prescription.date_from <= today <= prescription.date_to:
+            prescription.todays_frequency = prescription.frequency
+    db.session.commit()
+
+@blp.route("/mar/<int:participant_id>")
 class MarType(MethodView):
     @jwt_required()
+    @blp.arguments(PrescriptionQuerySchema)
     @blp.response(200, PrescriptionSchema(many=True))
-    def get(self, participant_id):
-        participant = PrescriptionModel.query.filter_by(participant_id=participant_id).all()
-        return participant
+    def get(self, args, participant_id):
+        date_from = args.get('date_from')
+        date_to = args.get('date_to')
+
+        if not date_from or not date_to:
+            abort(400, message="date_from and date_to query parameters are required.")
+
+        try:
+            reset_todays_frequency()  # Reset today's frequency at the start of each day
+
+            query = PrescriptionModel.query.filter(
+                PrescriptionModel.participant_id == participant_id,
+                PrescriptionModel.date_from <= date_to,
+                PrescriptionModel.date_to >= date_from
+            )
+            prescriptions = query.all()
+
+            if not prescriptions:
+                abort(404, message="No prescriptions found for the specified participant and date range.")
+
+            return prescriptions
+        except SQLAlchemyError as e:
+            abort(500, message=f"An error occurred while retrieving prescriptions: {str(e)}")
+
 @blp.route("/mar/<string:mar_id>")
 class MarUpdate(MethodView):
     @jwt_required()
-    def delete(self,mar_id):
+    def delete(self, mar_id):
         jwt = get_jwt()
-        # if not jwt.get("is_admin"):
-        #     abort(401, message="Admin privillege is required")
         try:
             participant_mar = PrescriptionModel.query.get_or_404(mar_id)
             db.session.delete(participant_mar)
             db.session.commit()
             return {"message": "Participant Prescription  deleted."}
         except SQLAlchemyError as e:
-                abort(500, message=f"An error occurred while deleting the Participant Prescription. {e}")
-
+            abort(500, message=f"An error occurred while deleting the Participant Prescription. {e}")
 
     @jwt_required()
     @blp.arguments(PrescriptionUpdateSchema)
     @blp.response(200, PrescriptionUpdateSchema)
     def put(self, participant_data, mar_id):
         mar = PrescriptionModel.query.get(mar_id)
-        # Check if the instance exists
         if mar is None:
             return {"error": "Prescription not found"}, 404
-        # Update the instance fields with participant_data
+
         for key, value in participant_data.items():
             setattr(mar, key, value)
-        # Set the updated_at field to the current time
+
         mar.updated_at = datetime.now()
-        # Optionally update created_at if it's part of participant_data
         if 'created_at' in participant_data:
             mar.created_at = participant_data['created_at']
-        # Commit the changes to the database
+
         db.session.commit()
         return mar
-
 
 @blp.route("/mars")
 class MarPost(MethodView):
@@ -62,8 +87,6 @@ class MarPost(MethodView):
     @blp.arguments(PrescriptionSchema)
     @blp.response(201, PrescriptionSchema)
     def post(self, participant_data):
-
-        # Create a PrescriptionModel instance
         participant = PrescriptionModel(
             participant_id=participant_data["participant_id"],
             drug_id=participant_data["drug_id"],
@@ -74,6 +97,9 @@ class MarPost(MethodView):
             date_to=participant_data["date_to"],
             place_of_mar=participant_data["place_of_mar"],
             dossage=participant_data["dossage"],
+            frequency=participant_data["frequency"],
+            todays_frequency=participant_data["frequency"],  # Set today's frequency
+            qty=participant_data["qty"],
             comment=participant_data["comment"],
             created_by=get_jwt_identity(),
             created_at=datetime.now(),
@@ -85,3 +111,32 @@ class MarPost(MethodView):
         except SQLAlchemyError as e:
             abort(500, message=f"An error occurred while inserting the participant prescription .{e}.")
         return participant
+
+@blp.route("/mar/give/<int:mar_id>")
+class MarGive(MethodView):
+    @jwt_required()
+    def post(self, mar_id):
+        try:
+            prescription = PrescriptionModel.query.get_or_404(mar_id)
+            today = date.today()
+
+            if prescription.date_from <= today <= prescription.date_to:
+                if prescription.todays_frequency > 0:
+                    administration = AdministrationModel(
+                        mar_id=prescription.id,
+                        administered_by=get_jwt_identity()
+                    )
+                    db.session.add(administration)
+                    prescription.todays_frequency -= 1
+                    prescription.updated_at = datetime.now()
+                    db.session.commit()
+                    return {
+                        "message": "Medication given successfully.",
+                        "remaining_frequency": prescription.todays_frequency
+                    }, 200
+                else:
+                    return {"message": "No remaining frequency for this medication today."}, 400
+            else:
+                return {"message": "This prescription is not valid today."}, 400
+        except SQLAlchemyError as e:
+            abort(500, message=f"An error occurred while updating the prescription: {str(e)}")
