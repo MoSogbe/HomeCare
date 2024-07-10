@@ -8,11 +8,18 @@ from sqlalchemy import or_, and_
 from models.participant import ParticipantModel
 from models.prescription import PrescriptionModel
 from models.mar_administration import AdministrationModel
+from models.stock_total import StockTotalModel
 from schemas import ParticipantSchema, PrescriptionSchema, PrescriptionUpdateSchema, PrescriptionQuerySchema
 from datetime import datetime, date
 
 
 blp = Blueprint("Participant Prescription", "prescriptions", description="Operations on Participant Prescription or MAR")
+
+def parse_date(date_str):
+    try:
+        return datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
+    except ValueError:
+        return datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
 
 def reset_todays_frequency():
     today = date.today()
@@ -126,11 +133,25 @@ class MarGive(MethodView):
             today = date.today()
 
             # Convert the date_from and date_to strings to datetime objects
-            date_from = datetime.strptime(prescription.date_from, '%Y-%m-%d %H:%M:%S')
-            date_to = datetime.strptime(prescription.date_to, '%Y-%m-%d %H:%M:%S')
+            date_from = parse_date(prescription.date_from)
+            date_to = parse_date(prescription.date_to)
 
             if date_from.date() <= today <= date_to.date():
                 if prescription.todays_frequency > 0:
+                    # Get the stock for the drug
+                    stock = StockTotalModel.query.filter_by(drug_id=prescription.drug_id).first()
+
+                    if stock is None:
+                        return {"message": "No stock found for this drug."}, 400
+
+                    stock_qty = int(stock.total_qty)
+                    if stock_qty < prescription.qty:
+                        return {"message": "Not enough stock available for this drug."}, 400
+
+                    # Deduct the quantity from the stock
+                    stock.total_qty = str(stock_qty - prescription.qty)
+                    stock.updated_at = datetime.now()
+
                     administration = AdministrationModel(
                         mar_id=prescription.id,
                         administered_by=get_jwt_identity()
@@ -138,10 +159,12 @@ class MarGive(MethodView):
                     db.session.add(administration)
                     prescription.todays_frequency -= 1
                     prescription.updated_at = datetime.now()
+
                     db.session.commit()
                     return {
                         "message": "Medication given successfully.",
-                        "remaining_frequency": prescription.todays_frequency
+                        "remaining_frequency": prescription.todays_frequency,
+                        "remaining_stock": stock.total_qty
                     }, 200
                 else:
                     return {"message": "No remaining frequency for this medication today."}, 400
