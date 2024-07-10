@@ -11,13 +11,18 @@ from models.mar_administration import AdministrationModel
 from schemas import ParticipantSchema, PrescriptionSchema, PrescriptionUpdateSchema, PrescriptionQuerySchema
 from datetime import datetime, date
 
+
 blp = Blueprint("Participant Prescription", "prescriptions", description="Operations on Participant Prescription or MAR")
 
 def reset_todays_frequency():
     today = date.today()
     prescriptions = PrescriptionModel.query.all()
     for prescription in prescriptions:
-        if prescription.date_from <= today <= prescription.date_to:
+        # Convert the date_from and date_to strings to datetime objects
+        date_from = datetime.strptime(prescription.date_from, '%Y-%m-%d %H:%M:%S')
+        date_to = datetime.strptime(prescription.date_to, '%Y-%m-%d %H:%M:%S')
+
+        if date_from.date() <= today <= date_to.date():
             prescription.todays_frequency = prescription.frequency
     db.session.commit()
 
@@ -59,7 +64,7 @@ class MarUpdate(MethodView):
             participant_mar = PrescriptionModel.query.get_or_404(mar_id)
             db.session.delete(participant_mar)
             db.session.commit()
-            return {"message": "Participant Prescription  deleted."}
+            return {"message": "Participant Prescription deleted."}
         except SQLAlchemyError as e:
             abort(500, message=f"An error occurred while deleting the Participant Prescription. {e}")
 
@@ -109,7 +114,7 @@ class MarPost(MethodView):
             db.session.add(participant)
             db.session.commit()
         except SQLAlchemyError as e:
-            abort(500, message=f"An error occurred while inserting the participant prescription .{e}.")
+            abort(500, message=f"An error occurred while inserting the participant prescription: {e}.")
         return participant
 
 @blp.route("/mar/give/<int:mar_id>")
@@ -120,7 +125,11 @@ class MarGive(MethodView):
             prescription = PrescriptionModel.query.get_or_404(mar_id)
             today = date.today()
 
-            if prescription.date_from <= today <= prescription.date_to:
+            # Convert the date_from and date_to strings to datetime objects
+            date_from = datetime.strptime(prescription.date_from, '%Y-%m-%d %H:%M:%S')
+            date_to = datetime.strptime(prescription.date_to, '%Y-%m-%d %H:%M:%S')
+
+            if date_from.date() <= today <= date_to.date():
                 if prescription.todays_frequency > 0:
                     administration = AdministrationModel(
                         mar_id=prescription.id,
