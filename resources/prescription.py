@@ -36,11 +36,12 @@ def reset_todays_frequency():
 @blp.route("/mar/<int:participant_id>")
 class MarType(MethodView):
     @jwt_required()
-    @blp.arguments(PrescriptionQuerySchema)
+    #@blp.arguments(PrescriptionQuerySchema)
     @blp.response(200, PrescriptionSchema(many=True))
-    def get(self, args, participant_id):
-        date_from = args.get('date_from')
-        date_to = args.get('date_to')
+    def get(self, participant_id):
+        now = datetime.now()
+        date_from = datetime(now.year, now.month, now.day, 0, 0, 1)
+        date_to = datetime(now.year, now.month, now.day, 23, 59, 59)
 
         if not date_from or not date_to:
             abort(400, message="date_from and date_to query parameters are required.")
