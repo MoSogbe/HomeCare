@@ -39,6 +39,7 @@ from resources.prescription import blp as PrescriptionBlueprint
 from resources.vitals import blp as VitalsBlueprint
 from resources.daily_notes import blp as DailyNoteBluePrint
 from resources.log_entry import log_entry_blp as LogEntryBluePrint
+from resources.participant_life_story import blp as ParticipantLifeStoryBluePrint
 from blocklist import BLOCKLIST
 from flask_migrate import Migrate
 from flask_cors import CORS
@@ -152,4 +153,5 @@ def create_app(db_url=None):
     api.register_blueprint(VitalsBlueprint)
     api.register_blueprint(DailyNoteBluePrint)
     api.register_blueprint(LogEntryBluePrint)
+    api.register_blueprint(ParticipantLifeStoryBluePrint)
     return app

@@ -32,3 +32,4 @@ from models.vitals import VitalsModel
 from models.daily_notes import DailyNotesModel
 from models.log_entry import LogEntryModel
 from models.mar_administration import AdministrationModel
+from models.life_story import LifeStoryModel
