@@ -1,5 +1,5 @@
 # resources/life_story.py
-from flask import request
+from flask import request,send_from_directory
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from sqlalchemy.exc import SQLAlchemyError
@@ -12,6 +12,7 @@ from datetime import datetime
 import os
 
 blp = Blueprint("LifeStories", "life_stories", description="Operations on Life Stories")
+UPLOAD_FOLDER = "uploads/life_stories"
 
 @blp.route("/life_story/<int:participant_id>")
 class LifeStoryUpload(MethodView):
@@ -59,3 +60,13 @@ class AllLifeStories(MethodView):
     def get(self):
         life_stories = LifeStoryModel.query.all()
         return life_stories
+
+
+@blp.route("/life_story/file/<int:life_story_id>")
+class LifeStoryFile(MethodView):
+    #@jwt_required()
+    def get(self, life_story_id):
+        life_story = LifeStoryModel.query.get_or_404(life_story_id)
+        directory = os.path.dirname(life_story.file_path)
+        filename = os.path.basename(life_story.file_path)
+        return send_from_directory(directory, filename)
