@@ -22,7 +22,7 @@ class LogEntryList(MethodView):
         results = db.session.query(
             LogEntryModel.id,
             LogEntryModel.participant_id,
-            LogEntryModel.caregiver_id,
+            LogEntryModel.user_id,
             LogEntryModel.check_in,
             LogEntryModel.check_out,
             LogEntryModel.notes,
@@ -32,7 +32,7 @@ class LogEntryList(MethodView):
         log_entries = [{
             'id': r.id,
             'participant_id': r.participant_id,
-            'caregiver_id': r.caregiver_id,
+            'user_id': r.user_id,
             'check_in': r.check_in,
             'check_out': r.check_out,
             'notes': r.notes,
@@ -47,11 +47,11 @@ class LogEntryList(MethodView):
     def post(self, log_entry_data):
         log_entry = LogEntryModel(
             participant_id=log_entry_data['participant_id'],
-            caregiver_id=log_entry_data['caregiver_id'],
             check_in=log_entry_data['check_in'],
             check_out=log_entry_data.get('check_out'),
             notes=log_entry_data.get('notes'),
-            service_id=log_entry_data.get('service_id')
+            service_id=log_entry_data.get('service_id'),
+            user_id = log_entry_data.get('user_id')
         )
 
         try:
@@ -78,7 +78,7 @@ class LogEntryDetail(MethodView):
         log_entry = LogEntryModel.query.get_or_404(log_entry_id)
 
         log_entry.participant_id = log_entry_data.get('participant_id', log_entry.participant_id)
-        log_entry.caregiver_id = log_entry_data.get('caregiver_id', log_entry.caregiver_id)
+        log_entry.caregiver_id = log_entry_data.get('user_id', log_entry.caregiver_id)
         log_entry.check_in = log_entry_data.get('check_in', log_entry.check_in)
         log_entry.check_out = log_entry_data.get('check_out', log_entry.check_out)
         log_entry.notes = log_entry_data.get('notes', log_entry.notes)
