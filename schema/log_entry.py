@@ -9,3 +9,5 @@ class LogEntrySchema(Schema):
     check_out = fields.DateTime()
     notes = fields.Str()
     service_id = fields.Int()
+    created_at = fields.DateTime(dump_only=True)
+    updated_at = fields.DateTime(dump_only=True)

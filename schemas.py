@@ -158,6 +158,7 @@ class ParticipantServiceProviderHistorySchema(Schema):
 class DiagnosisSchema(Schema):
     id = fields.Int(dump_only=True)
     participant_id = fields.Int(required=True)
+    axis_id = fields.Int(required=True)
     medical_condition_id = fields.Int(required=True)
 
 class DiagnosisViewSchema(Schema):
@@ -165,6 +166,10 @@ class DiagnosisViewSchema(Schema):
     participant_id = fields.Int(required=True)
     medical_condition_id = fields.Int(required=True)
     condition_name = fields.Str(required=True)
+    axis_name = fields.Str(required=True)
+    created_by = fields.Int(required=True)
+    created_at = fields.DateTime(dump_only=True)
+    updated_at = fields.DateTime(dump_only=True)
 
 class MITSchema(Schema):
     id = fields.Int(dump_only=True)
