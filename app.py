@@ -61,6 +61,8 @@ def create_app(db_url=None):
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["PROPAGATE_EXCEPTIONS"] = True
     app.config['UPLOADED_PHOTOS_DEST'] = 'uploads'
+    UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
     app.debug = True
     db.init_app(app)
     migrate = Migrate(app,db)
