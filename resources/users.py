@@ -54,7 +54,6 @@ class   TokenRefresh(MethodView):
 
 @blp.route("/logout")
 class UserLogout(MethodView):
-    @jwt_required()
     def post(self):
         jti = get_jwt()["jti"]
         BLOCKLIST.add(jti)

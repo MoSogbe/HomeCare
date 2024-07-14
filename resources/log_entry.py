@@ -7,7 +7,7 @@ from sqlalchemy.orm import aliased
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from datetime import datetime
 from models import LogEntryModel, ParticipantModel, CareGiverModel, ServiceModel
-from schema.log_entry import LogEntrySchema
+from schema.log_entry import LogEntrySchema,LogEntryUpdateSchema
 
 log_entry_blp = Blueprint(
     'Log Entry', 'log_entry', url_prefix='/log-entries',
@@ -72,7 +72,7 @@ class LogEntryDetail(MethodView):
         return jsonify(LogEntrySchema().dump(log_entry))
 
     @jwt_required()
-    @log_entry_blp.arguments(LogEntrySchema)
+    @log_entry_blp.arguments(LogEntryUpdateSchema)
     @log_entry_blp.response(200, LogEntrySchema)
     def put(self, log_entry_data, log_entry_id):
         log_entry = LogEntryModel.query.get_or_404(log_entry_id)

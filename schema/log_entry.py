@@ -6,8 +6,15 @@ class LogEntrySchema(Schema):
     participant_id = fields.Int(required=True)
     user_id = fields.Int(required=True)
     check_in = fields.DateTime(required=True)
-    check_out = fields.DateTime(required=False)
     notes = fields.Str()
     service_id = fields.Int()
+    created_at = fields.DateTime(dump_only=True)
+    updated_at = fields.DateTime(dump_only=True)
+
+
+
+class LogEntryUpdateSchema(Schema):
+    id = fields.Int(dump_only=True)
+    notes = fields.Str()
     created_at = fields.DateTime(dump_only=True)
     updated_at = fields.DateTime(dump_only=True)

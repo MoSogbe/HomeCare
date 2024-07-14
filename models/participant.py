@@ -15,6 +15,6 @@ class ParticipantModel(db.Model):
     gender = db.relationship('GenderModel', backref='participants', lazy=True,overlaps="gender,participants")
     bio_title_id = db.Column(db.Integer, db.ForeignKey('bio_titles.id'), nullable=False)
     bio_title = db.relationship('BTitleModel', backref='participants', lazy=True,overlaps="gender,participants")
-    profile_image = db.Column(db.String(255), nullable=True) 
+    profile_image = db.Column(db.String(255), nullable=True)
     created_at = db.Column(db.DateTime(), nullable=False)
     updated_at = db.Column(db.DateTime(), nullable=False)

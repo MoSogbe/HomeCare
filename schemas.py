@@ -32,14 +32,6 @@ class UserRegistersSchema(UserSchema):
     user_type = fields.Str(required=True)
 
 
-# class CompanySchema(Schema):
-#     id = fields.Int(dump_only=True)
-#     name_of_company = fields.Str(required=True)
-#     email = fields.Str(required=True)
-#     phone_number = fields.Str(required=True)
-#     address = fields.Str(required=True)
-#     created_at = datetime.now()
-#     updated_at = datetime.now()
 
 class ServiceCategorySchema(Schema):
     id = fields.Int(dump_only=True)
