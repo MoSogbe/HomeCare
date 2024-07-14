@@ -76,13 +76,8 @@ class LogEntryDetail(MethodView):
     @log_entry_blp.response(200, LogEntrySchema)
     def put(self, log_entry_data, log_entry_id):
         log_entry = LogEntryModel.query.get_or_404(log_entry_id)
-
-        log_entry.participant_id = log_entry_data.get('participant_id', log_entry.participant_id)
-        log_entry.caregiver_id = log_entry_data.get('user_id', log_entry.caregiver_id)
-        log_entry.check_in = log_entry_data.get('check_in', log_entry.check_in)
         log_entry.check_out = log_entry_data.get('check_out', log_entry.check_out)
         log_entry.notes = log_entry_data.get('notes', log_entry.notes)
-        log_entry.service_id = log_entry_data.get('service_id', log_entry.service_id)
 
         try:
             db.session.commit()
