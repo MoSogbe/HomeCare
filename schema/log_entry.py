@@ -16,5 +16,6 @@ class LogEntrySchema(Schema):
 class LogEntryUpdateSchema(Schema):
     id = fields.Int(dump_only=True)
     notes = fields.Str()
+    check_out = fields.DateTime(required=True)
     created_at = fields.DateTime(dump_only=True)
     updated_at = fields.DateTime(dump_only=True)
