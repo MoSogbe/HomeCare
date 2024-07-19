@@ -304,7 +304,10 @@ class PrescriptionSchema(Schema):
     dossage = fields.Str(required=True)
     frequency = fields.Int(required=True)
     qty = fields.Int(required=True)
+    todays_frequency = fields.Int(required=True)
     comment = fields.Str(required=True)
+    created_at = fields.DateTime(dump_only=True)
+    updated_at = fields.DateTime(dump_only=True)
 
 
 class PrescriptionUpdateSchema(Schema):

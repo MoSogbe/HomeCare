@@ -41,6 +41,8 @@ from resources.daily_notes import blp as DailyNoteBluePrint
 from resources.log_entry import log_entry_blp as LogEntryBluePrint
 from resources.participant_life_story import blp as ParticipantLifeStoryBluePrint
 from resources.axis import blp as AxisBlueprint
+from resources.document_type import blp as DocumentTypeBlueprint
+from resources.participant_documentation import blp as ParticipantDocumentation
 from blocklist import BLOCKLIST
 from flask_migrate import Migrate
 from flask_cors import CORS
@@ -158,4 +160,6 @@ def create_app(db_url=None):
     api.register_blueprint(LogEntryBluePrint)
     api.register_blueprint(ParticipantLifeStoryBluePrint)
     api.register_blueprint(AxisBlueprint)
+    api.register_blueprint(DocumentTypeBlueprint)
+    api.register_blueprint(ParticipantDocumentation)
     return app

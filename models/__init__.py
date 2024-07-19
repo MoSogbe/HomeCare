@@ -34,3 +34,5 @@ from models.log_entry import LogEntryModel
 from models.mar_administration import AdministrationModel
 from models.life_story import LifeStoryModel
 from models.axis import AxisModel
+from models.document_type import DocumentTypeModel
+from models.participant_documentation import ParticipantDocumentationModel
