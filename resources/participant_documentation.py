@@ -16,7 +16,6 @@ UPLOAD_FOLDER = "uploads/participant_documentations"
 @blp.route("/participant_documentation/<int:participant_id>")
 class ParticipantDocumentationUpload(MethodView):
     @jwt_required()
-    @blp.arguments(ParticipantDocumentationSchema)
     @blp.response(201, ParticipantDocumentationSchema)
     def post(self, participant_id):
         user_id = get_jwt_identity()
