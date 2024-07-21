@@ -5,6 +5,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from db import db
 from models.participant_documentation import ParticipantDocumentationModel
+from models.document_type import DocumentTypeModel
 from schema.participant_documentation import ParticipantDocumentationSchema
 from werkzeug.utils import secure_filename
 from datetime import datetime
@@ -29,10 +30,14 @@ class ParticipantDocumentationUpload(MethodView):
         file_path = os.path.join(UPLOAD_FOLDER, filename)
         file.save(file_path)
 
+        document_type_id = request.form.get('document_type_id')
+        if not document_type_id:
+            abort(400, message="Document type is required.")
+
         participant_documentation = ParticipantDocumentationModel(
             participant_id=participant_id,
+            document_type_id=document_type_id,
             created_by=user_id,
-            document_type_id=request.form.get('document_type_id'),
             file_path=file_path,
             created_at=datetime.utcnow(),
             updated_at=datetime.utcnow()
@@ -48,24 +53,64 @@ class ParticipantDocumentationUpload(MethodView):
     @jwt_required()
     @blp.response(200, ParticipantDocumentationSchema(many=True))
     def get(self, participant_id):
-        participant_documentations = ParticipantDocumentationModel.query.filter_by(participant_id=participant_id).all()
-        if not participant_documentations:
-            abort(404, message="No participant documentations found for the specified participant.")
-        return participant_documentations
+        documentations = db.session.query(
+            ParticipantDocumentationModel.id,
+            ParticipantDocumentationModel.participant_id,
+            ParticipantDocumentationModel.document_type_id,
+            DocumentTypeModel.document_type,
+            ParticipantDocumentationModel.file_path,
+            ParticipantDocumentationModel.created_at,
+            ParticipantDocumentationModel.updated_at
+        ).join(DocumentTypeModel, ParticipantDocumentationModel.document_type_id == DocumentTypeModel.id)\
+         .filter(ParticipantDocumentationModel.participant_id == participant_id)\
+         .all()
+        if not documentations:
+            abort(404, message="No documentations found for the specified participant.")
+        return [
+            {
+                "id": doc.id,
+                "participant_id": doc.participant_id,
+                "document_type_id": doc.document_type_id,
+                "document_type": doc.document_type,
+                "file_path": doc.file_path,
+                "created_at": doc.created_at,
+                "updated_at": doc.updated_at,
+            }
+            for doc in documentations
+        ]
 
 @blp.route("/participant_documentations")
 class AllParticipantDocumentations(MethodView):
     @jwt_required()
     @blp.response(200, ParticipantDocumentationSchema(many=True))
     def get(self):
-        participant_documentations = ParticipantDocumentationModel.query.all()
-        return participant_documentations
+        documentations = db.session.query(
+            ParticipantDocumentationModel.id,
+            ParticipantDocumentationModel.participant_id,
+            ParticipantDocumentationModel.document_type_id,
+            DocumentTypeModel.document_type,
+            ParticipantDocumentationModel.file_path,
+            ParticipantDocumentationModel.created_at,
+            ParticipantDocumentationModel.updated_at
+        ).join(DocumentTypeModel, ParticipantDocumentationModel.document_type_id == DocumentTypeModel.id)\
+         .all()
+        return [
+            {
+                "id": doc.id,
+                "participant_id": doc.participant_id,
+                "document_type_id": doc.document_type_id,
+                "document_type": doc.document_type,
+                "file_path": doc.file_path,
+                "created_at": doc.created_at,
+                "updated_at": doc.updated_at,
+            }
+            for doc in documentations
+        ]
 
-@blp.route("/participant_documentation/file/<int:participant_documentation_id>")
+@blp.route("/participant_documentation/file/<int:documentation_id>")
 class ParticipantDocumentationFile(MethodView):
-    #@jwt_required()
-    def get(self, participant_documentation_id):
-        participant_documentation = ParticipantDocumentationModel.query.get_or_404(participant_documentation_id)
-        directory = os.path.dirname(participant_documentation.file_path)
-        filename = os.path.basename(participant_documentation.file_path)
+    def get(self, documentation_id):
+        documentation = ParticipantDocumentationModel.query.get_or_404(documentation_id)
+        directory = os.path.dirname(documentation.file_path)
+        filename = os.path.basename(documentation.file_path)
         return send_from_directory(directory, filename)
