@@ -25,3 +25,4 @@ class PrescriptionModel(db.Model):
 
 
     administrations = db.relationship("AdministrationModel", backref="prescriptions")
+    med_actions = db.relationship("MedActionModel", back_populates="mar", cascade="all, delete-orphan")

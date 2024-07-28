@@ -8,6 +8,10 @@ from sqlalchemy import or_, and_
 from models.participant import ParticipantModel
 from models.prescription import PrescriptionModel
 from models.mar_administration import AdministrationModel
+from models.med_action import MedActionModel
+from models.users import UserModel
+from schema.med_action import MedActionSchema
+from schema.med_action_status import MedActionStatusSchema
 from models.stock_total import StockTotalModel
 from schemas import ParticipantSchema, PrescriptionSchema, PrescriptionUpdateSchema, PrescriptionQuerySchema
 from datetime import datetime, date
@@ -173,3 +177,37 @@ class MarGive(MethodView):
                 return {"message": "This prescription is not valid today."}, 400
         except SQLAlchemyError as e:
             abort(500, message=f"An error occurred while updating the prescription: {str(e)}")
+
+@blp.route("/med_actions")
+class MedActionList(MethodView):
+    @blp.response(200, MedActionSchema(many=True))
+    def get(self):
+        try:
+            med_actions = db.session.query(
+                MedActionModel,
+                ParticipantModel.name.label("participant_name"),
+                UserModel.fullname.label("caregiver_name"),
+                MedActionStatusModel.status_name.label("status")
+            ).join(ParticipantModel, MedActionModel.mar_id == ParticipantModel.id)\
+             .join(UserModel, MedActionModel.administered_by == UserModel.id)\
+             .join(MedActionStatusModel, MedActionModel.status_id == MedActionStatusModel.id)\
+             .all()
+
+            if not med_actions:
+                abort(404, message="No medication actions found.")
+
+            return [
+                {
+                    "id": action.MedActionModel.id,
+                    "mar_id": action.MedActionModel.mar_id,
+                    "status_id": action.MedActionModel.status_id,
+                    "status": action.status,
+                    "administered_by": action.MedActionModel.administered_by,
+                    "caregiver_name": action.caregiver_name,
+                    "participant_name": action.participant_name,
+                    "created_at": action.MedActionModel.created_at,
+                }
+                for action in med_actions
+            ]
+        except SQLAlchemyError as e:
+            abort(500, message=f"An error occurred while retrieving medication actions: {str(e)}")

@@ -12,4 +12,5 @@ class UserModel(db.Model):
     updated_at = db.Column(db.DateTime(), nullable=False)
     user_type_id = db.Column(db.Integer, db.ForeignKey('user_types.id'), nullable=False)
     user_type = db.relationship('UserTypeModel', backref='users')
-    
+    med_actions = db.relationship('MedActionModel', back_populates='user')
+

@@ -16,7 +16,7 @@ import os
 blp = Blueprint("AdministrativeDocumentations", "administrative_documentations", description="Operations on Administrative Documentations")
 UPLOAD_FOLDER = "uploads/administrative_documentations"
 
-@blp.route("/administrative_documentation/<int:participant_id>")
+@blp.route("/administrative_documentation")
 class AdministrativeDocumentationUpload(MethodView):
     @jwt_required()
     @blp.response(201, AdministrativeDocumentationSchema)

@@ -37,3 +37,5 @@ from models.axis import AxisModel
 from models.document_type import DocumentTypeModel
 from models.participant_documentation import ParticipantDocumentationModel
 from models.administrative_documentation import AdministrativeDocumentationModel
+from models.med_action import MedActionModel
+from models.med_action_status import MedActionStatusModel
