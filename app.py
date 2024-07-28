@@ -43,6 +43,7 @@ from resources.participant_life_story import blp as ParticipantLifeStoryBluePrin
 from resources.axis import blp as AxisBlueprint
 from resources.document_type import blp as DocumentTypeBlueprint
 from resources.participant_documentation import blp as ParticipantDocumentation
+from resources.administrative_documentation import blp as AdminDocumentationBluePrint
 from blocklist import BLOCKLIST
 from flask_migrate import Migrate
 from flask_cors import CORS
@@ -162,4 +163,5 @@ def create_app(db_url=None):
     api.register_blueprint(AxisBlueprint)
     api.register_blueprint(DocumentTypeBlueprint)
     api.register_blueprint(ParticipantDocumentation)
+    api.register_blueprint(AdminDocumentationBluePrint)
     return app
