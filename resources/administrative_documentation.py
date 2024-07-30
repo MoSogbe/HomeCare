@@ -39,7 +39,6 @@ class AdministrativeDocumentationUpload(MethodView):
         comment = request.form.get('comment')
 
         administrative_documentation = AdministrativeDocumentationModel(
-            participant_id=participant_id,
             document_type_id=document_type_id,
             created_by=user_id,
             file_path=file_path,
@@ -71,7 +70,6 @@ class AdministrativeDocumentationUpload(MethodView):
         return [
             {
                 "id": doc.AdministrativeDocumentationModel.id,
-                "participant_id": doc.AdministrativeDocumentationModel.participant_id,
                 "document_type_id": doc.AdministrativeDocumentationModel.document_type_id,
                 "document_type": doc.document_type,
                 "created_by": doc.AdministrativeDocumentationModel.created_by,
@@ -116,7 +114,6 @@ class AllAdministrativeDocumentations(MethodView):
         return [
             {
                 "id": doc.AdministrativeDocumentationModel.id,
-                "participant_id": doc.AdministrativeDocumentationModel.participant_id,
                 "document_type_id": doc.AdministrativeDocumentationModel.document_type_id,
                 "document_type": doc.document_type,
                 "created_by": doc.AdministrativeDocumentationModel.created_by,

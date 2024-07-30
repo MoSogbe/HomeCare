@@ -3,7 +3,6 @@ from marshmallow import Schema, fields
 
 class AdministrativeDocumentationSchema(Schema):
     id = fields.Int(dump_only=True)
-    participant_id = fields.Int(required=True)
     document_type_id = fields.Int(required=True)
     document_type = fields.Str(dump_only=True)
     created_by = fields.Int(dump_only=True)
