@@ -20,7 +20,7 @@ UPLOAD_FOLDER = "uploads/administrative_documentations"
 class AdministrativeDocumentationUpload(MethodView):
     @jwt_required()
     @blp.response(201, AdministrativeDocumentationSchema)
-    def post(self, participant_id):
+    def post(self):
         user_id = get_jwt_identity()
 
         # Handle file upload
