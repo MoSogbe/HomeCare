@@ -60,7 +60,7 @@ class AdministrativeDocumentationUpload(MethodView):
         documentations = db.session.query(
             AdministrativeDocumentationModel,
             DocumentTypeModel.document_type,
-            UserModel.full_name.label('created_by_full_name')
+            UserModel.fullname.label('created_by_full_name')
         ).join(DocumentTypeModel, AdministrativeDocumentationModel.document_type_id == DocumentTypeModel.id)\
          .join(UserModel, AdministrativeDocumentationModel.created_by == UserModel.id)\
          .filter(AdministrativeDocumentationModel.participant_id == participant_id)\
@@ -107,7 +107,7 @@ class AllAdministrativeDocumentations(MethodView):
         documentations = db.session.query(
             AdministrativeDocumentationModel,
             DocumentTypeModel.document_type,
-            UserModel.full_name.label('created_by_full_name')
+            UserModel.fullname.label('created_by_full_name')
         ).join(DocumentTypeModel, AdministrativeDocumentationModel.document_type_id == DocumentTypeModel.id)\
          .join(UserModel, AdministrativeDocumentationModel.created_by == UserModel.id)\
          .all()
