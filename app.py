@@ -45,6 +45,7 @@ from resources.document_type import blp as DocumentTypeBlueprint
 from resources.participant_documentation import blp as ParticipantDocumentation
 from resources.administrative_documentation import blp as AdminDocumentationBluePrint
 from resources.med_action_status import blp as MedActionStatusBlueprint
+from resources.med_error import blp as MedErrorBlueprint
 from blocklist import BLOCKLIST
 from flask_migrate import Migrate
 from flask_cors import CORS
@@ -61,7 +62,7 @@ def create_app(db_url=None):
     app.config[
         "OPENAPI_SWAGGER_UI_URL"
     ] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
-    app.config["SQLALCHEMY_DATABASE_URI"] = db_url or os.getenv("DATABASE_URL",f"mysql://homydb:<nikky/>@72.167.59.130:3306/homecaredb")
+    app.config["SQLALCHEMY_DATABASE_URI"] = db_url or os.getenv("DATABASE_URL",f"mysql://root:123456@localhost/homecare")
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["PROPAGATE_EXCEPTIONS"] = True
     app.config['UPLOADED_PHOTOS_DEST'] = 'uploads'
@@ -166,4 +167,5 @@ def create_app(db_url=None):
     api.register_blueprint(ParticipantDocumentation)
     api.register_blueprint(AdminDocumentationBluePrint)
     api.register_blueprint(MedActionStatusBlueprint)
+    api.register_blueprint(MedErrorBlueprint)
     return app

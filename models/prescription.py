@@ -22,7 +22,8 @@ class PrescriptionModel(db.Model):
     user = db.relationship('UserModel', backref='prescriptions')
     created_at = db.Column(db.DateTime(), nullable=False)
     updated_at = db.Column(db.DateTime(), nullable=False)
-
+    prescriptions = db.relationship('PrescriptionModel', back_populates='participant')
+    med_errors = db.relationship("MedErrorModel", back_populates="participant")
 
     administrations = db.relationship("AdministrationModel", backref="prescriptions")
     med_actions = db.relationship("MedActionModel", back_populates="mar", cascade="all, delete-orphan")
