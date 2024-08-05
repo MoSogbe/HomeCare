@@ -26,6 +26,7 @@ class LogEntryList(MethodView):
             LogEntryModel.check_in,
             LogEntryModel.check_out,
             LogEntryModel.notes,
+            LogEntryModel.location,
             LogEntryModel.service_id
         ).all()
 
@@ -36,6 +37,7 @@ class LogEntryList(MethodView):
             'check_in': r.check_in,
             'check_out': r.check_out,
             'notes': r.notes,
+            'notes': r.location,
             'service_id': r.service_id
         } for r in results]
 
@@ -50,6 +52,7 @@ class LogEntryList(MethodView):
             check_in=log_entry_data['check_in'],
             check_out=log_entry_data.get('check_out'),
             notes=log_entry_data.get('notes'),
+            location=log_entry_data.get('location'),
             service_id=log_entry_data.get('service_id'),
             user_id = log_entry_data.get('user_id')
         )

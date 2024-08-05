@@ -1,4 +1,5 @@
 from db import db
+from datetime import datetime
 
 class PrescriptionModel(db.Model):
     __tablename__ = "prescriptions"
@@ -15,15 +16,14 @@ class PrescriptionModel(db.Model):
     qty = db.Column(db.Integer, nullable=True)
     todays_frequency = db.Column(db.Integer, nullable=False, default=0)
     comment = db.Column(db.String(225))
-    drug = db.relationship('DrugModel', backref='prescriptions')
     participant_id = db.Column(db.Integer, db.ForeignKey('participants.id'), nullable=False)
-    participant = db.relationship('ParticipantModel', backref='prescriptions')
     created_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    user = db.relationship('UserModel', backref='prescriptions')
-    created_at = db.Column(db.DateTime(), nullable=False)
-    updated_at = db.Column(db.DateTime(), nullable=False)
-    prescriptions = db.relationship('PrescriptionModel', back_populates='participant')
-    med_errors = db.relationship("MedErrorModel", back_populates="participant")
+    created_at = db.Column(db.DateTime(), nullable=False, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime(), nullable=False, default=datetime.utcnow)
 
-    administrations = db.relationship("AdministrationModel", backref="prescriptions")
-    med_actions = db.relationship("MedActionModel", back_populates="mar", cascade="all, delete-orphan")
+    drug = db.relationship('DrugModel', backref='prescriptions')
+    participant = db.relationship('ParticipantModel', backref='prescriptions')
+    user = db.relationship('UserModel', backref='prescriptions')
+    administrations = db.relationship("AdministrationModel", backref="prescriptions", cascade="all, delete-orphan")
+    med_errors = db.relationship("MedErrorModel", back_populates="prescription", cascade="all, delete-orphan")
+    med_actions = db.relationship("MedActionModel", back_populates="prescription", cascade="all, delete-orphan")

@@ -10,6 +10,7 @@ class LogEntryModel(db.Model):
     check_in = db.Column(db.DateTime, nullable=False, default=db.func.now())
     check_out = db.Column(db.DateTime, nullable=True)
     notes = db.Column(db.String(255))
+    location = db.Column(db.String(255))
     service_id = db.Column(db.Integer, db.ForeignKey('services.id'))
     service = db.relationship('ServiceModel', backref='log_entries')
     created_at = db.Column(db.DateTime(), nullable=False, default=db.func.now())

@@ -14,6 +14,7 @@ from schema.med_action import MedActionSchema
 from schema.med_action_status import MedActionStatusSchema
 from models.stock_total import StockTotalModel
 from schemas import ParticipantSchema, PrescriptionSchema, PrescriptionUpdateSchema, PrescriptionQuerySchema
+from schema.give import GiveSchema
 from datetime import datetime, date
 
 
@@ -132,7 +133,15 @@ class MarPost(MethodView):
 @blp.route("/mar/give/<int:mar_id>")
 class MarGive(MethodView):
     @jwt_required()
-    def post(self, mar_id):
+    @blp.arguments(GiveSchema)
+    def post(self,give_data, mar_id):
+        if not request.is_json:
+            abort(415, message="Content-Type must be application/json")
+
+        status_id = give_data.get('status_id')
+        if status_id is None:
+            abort(400, message="status_id is required")
+
         try:
             prescription = PrescriptionModel.query.get_or_404(mar_id)
             today = date.today()
@@ -142,7 +151,7 @@ class MarGive(MethodView):
             date_to = parse_date(prescription.date_to)
 
             if date_from.date() <= today <= date_to.date():
-                if prescription.todays_frequency > 0:
+                if prescription.todays_frequency < prescription.frequency:
                     # Get the stock for the drug
                     stock = StockTotalModel.query.filter_by(drug_id=prescription.drug_id).first()
 
@@ -153,30 +162,43 @@ class MarGive(MethodView):
                     if stock_qty < prescription.qty:
                         return {"message": "Not enough stock available for this drug."}, 400
 
-                    # Deduct the quantity from the stock
-                    stock.total_qty = str(stock_qty - prescription.qty)
-                    stock.updated_at = datetime.now()
+                    if status_id != 1:
+                        # Save the action in the med action table
+                        med_action = MedActionModel(
+                            mar_id=prescription.id,
+                            status_id=status_id,
+                            administered_by=get_jwt_identity(),
+                            created_at=datetime.now()
+                        )
+                        db.session.add(med_action)
+                        db.session.commit()
+                        return {"message": "Medication action recorded successfully."}, 200
+                    else:
+                        # Deduct the quantity from the stock
+                        stock.total_qty = str(stock_qty - prescription.qty)
+                        stock.updated_at = datetime.now()
 
-                    administration = AdministrationModel(
-                        mar_id=prescription.id,
-                        administered_by=get_jwt_identity()
-                    )
-                    db.session.add(administration)
-                    prescription.todays_frequency -= 1
-                    prescription.updated_at = datetime.now()
+                        administration = AdministrationModel(
+                            mar_id=prescription.id,
+                            administered_by=get_jwt_identity()
+                        )
+                        db.session.add(administration)
+                        prescription.todays_frequency += 1
+                        prescription.updated_at = datetime.now()
 
-                    db.session.commit()
-                    return {
-                        "message": "Medication given successfully.",
-                        "remaining_frequency": prescription.todays_frequency,
-                        "remaining_stock": stock.total_qty
-                    }, 200
+                        db.session.commit()
+                        return {
+                            "message": "Medication given successfully.",
+                            "remaining_frequency": prescription.todays_frequency,
+                            "remaining_stock": stock.total_qty
+                        }, 200
                 else:
                     return {"message": "No remaining frequency for this medication today."}, 400
             else:
                 return {"message": "This prescription is not valid today."}, 400
         except SQLAlchemyError as e:
             abort(500, message=f"An error occurred while updating the prescription: {str(e)}")
+
 
 @blp.route("/med_actions")
 class MedActionList(MethodView):
@@ -187,10 +209,10 @@ class MedActionList(MethodView):
                 MedActionModel,
                 ParticipantModel.name.label("participant_name"),
                 UserModel.fullname.label("caregiver_name"),
-                MedActionStatusModel.status_name.label("status")
+                MedActionModel.status_name.label("status")
             ).join(ParticipantModel, MedActionModel.mar_id == ParticipantModel.id)\
              .join(UserModel, MedActionModel.administered_by == UserModel.id)\
-             .join(MedActionStatusModel, MedActionModel.status_id == MedActionStatusModel.id)\
+             .join(MedActionModel, MedActionModel.status_id == MedActionModel.id)\
              .all()
 
             if not med_actions:

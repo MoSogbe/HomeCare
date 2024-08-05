@@ -73,7 +73,7 @@ def create_app(db_url=None):
     migrate = Migrate(app,db)
     api = Api(app)
     app.config["JWT_SECRET_KEY"] = "brownfoxjumponthewall"
-    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = 3600
+    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = 36000
     jwt=JWTManager(app)
     @jwt.token_in_blocklist_loader
     def check_if_token_in_blocklist(jwt_header,jwt_payload):
