@@ -1,4 +1,6 @@
 .homecareenv
 __pycache__
 .app_localhost
-#.env.example
+venv/
+.idea/
+.vscode/

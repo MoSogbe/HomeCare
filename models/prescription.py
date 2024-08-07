@@ -1,8 +1,10 @@
-from db import db
 from datetime import datetime
+from db import db
+
 
 class PrescriptionModel(db.Model):
     __tablename__ = "prescriptions"
+
     id = db.Column(db.Integer, primary_key=True)
     drug_id = db.Column(db.Integer, db.ForeignKey('drugs.id'), nullable=False)
     reason_for_medication = db.Column(db.String(145), nullable=False)
@@ -24,6 +26,6 @@ class PrescriptionModel(db.Model):
     drug = db.relationship('DrugModel', backref='prescriptions')
     participant = db.relationship('ParticipantModel', backref='prescriptions')
     user = db.relationship('UserModel', backref='prescriptions')
-    administrations = db.relationship("AdministrationModel", backref="prescriptions", cascade="all, delete-orphan")
+    administrations = db.relationship("AdministrationModel", back_populates="prescription", cascade="all, delete-orphan", overlaps="prescription")
     med_errors = db.relationship("MedErrorModel", back_populates="prescription", cascade="all, delete-orphan")
     med_actions = db.relationship("MedActionModel", back_populates="prescription", cascade="all, delete-orphan")

@@ -41,3 +41,4 @@ from models.med_action import MedActionModel
 from models.med_action_status import MedActionStatusModel
 from models.med_error import MedErrorModel
 from models.med_error_reason import MedErrorReasonModel
+from models.appointments import AppointmentModel

@@ -1,5 +1,7 @@
-from db import db
 from datetime import datetime
+
+from db import db
+
 
 class AdministrationModel(db.Model):
     __tablename__ = "administrations"
@@ -9,4 +11,4 @@ class AdministrationModel(db.Model):
     administered_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
     administered_by = db.Column(db.String(50), nullable=False)
 
-    prescription = db.relationship("PrescriptionModel")
+    prescription = db.relationship("PrescriptionModel", back_populates="administrations", overlaps="prescriptions")
