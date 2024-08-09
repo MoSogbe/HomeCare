@@ -1,8 +1,8 @@
-"""Added Appointment Table
+"""empty message
 
-Revision ID: bd4d2bd9575c
+Revision ID: acaddfbc131e
 Revises: a048cf69fbac
-Create Date: 2024-08-07 22:46:00.227056
+Create Date: 2024-08-09 16:21:56.364465
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'bd4d2bd9575c'
+revision = 'acaddfbc131e'
 down_revision = 'a048cf69fbac'
 branch_labels = None
 depends_on = None
@@ -24,14 +24,6 @@ def upgrade():
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.PrimaryKeyConstraint('id')
-    )
-    op.create_table('behavioral_statuses',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('status', sa.String(length=12), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=False),
-    sa.Column('updated_at', sa.DateTime(), nullable=False),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('status')
     )
     op.create_table('bio_titles',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -165,12 +157,12 @@ def upgrade():
     sa.UniqueConstraint('type_name')
     )
     op.create_table('drugs',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('drug_category_id', sa.Integer(), nullable=False),
     sa.Column('drug_name', sa.String(length=125), nullable=False),
     sa.Column('generic_name', sa.String(length=125), nullable=False),
     sa.Column('brand_name', sa.String(length=125), nullable=False),
     sa.Column('uom_id', sa.Integer(), nullable=False),
+    sa.Column('drug_category_id', sa.Integer(), nullable=False),
+    sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['drug_category_id'], ['drug_category.id'], ),
@@ -179,7 +171,6 @@ def upgrade():
     sa.UniqueConstraint('drug_name')
     )
     op.create_table('participants',
-    sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=100), nullable=False),
     sa.Column('dob', sa.String(length=120), nullable=False),
     sa.Column('ssn', sa.String(length=15), nullable=False),
@@ -187,9 +178,10 @@ def upgrade():
     sa.Column('legal_status', sa.String(length=100), nullable=True),
     sa.Column('home_address', sa.String(length=100), nullable=True),
     sa.Column('home_phone', sa.String(length=100), nullable=True),
+    sa.Column('profile_image', sa.String(length=255), nullable=True),
     sa.Column('gender_id', sa.Integer(), nullable=False),
     sa.Column('bio_title_id', sa.Integer(), nullable=False),
-    sa.Column('profile_image', sa.String(length=255), nullable=True),
+    sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['bio_title_id'], ['bio_titles.id'], ),
@@ -237,7 +229,6 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('appointments',
-    sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('doctor', sa.String(length=50), nullable=False),
     sa.Column('appointment_date', sa.DateTime(), nullable=False),
     sa.Column('appointment_reason', sa.String(length=255), nullable=False),
@@ -245,6 +236,7 @@ def upgrade():
     sa.Column('follow_up_details', sa.String(length=255), nullable=True),
     sa.Column('created_by', sa.Integer(), nullable=False),
     sa.Column('participant_id', sa.Integer(), nullable=False),
+    sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['created_by'], ['users.id'], ),
@@ -259,6 +251,18 @@ def upgrade():
     sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['drug_id'], ['drugs.id'], ),
     sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('behavioral_issues',
+    sa.Column('details', sa.String(length=255), nullable=False),
+    sa.Column('participant_id', sa.Integer(), nullable=False),
+    sa.Column('created_by', sa.Integer(), nullable=False),
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('updated_at', sa.DateTime(), nullable=False),
+    sa.ForeignKeyConstraint(['created_by'], ['users.id'], ),
+    sa.ForeignKeyConstraint(['participant_id'], ['participants.id'], ),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('details')
     )
     op.create_table('caregivers',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -348,7 +352,6 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('log_entries',
-    sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('participant_id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('check_in', sa.DateTime(), nullable=False),
@@ -356,6 +359,8 @@ def upgrade():
     sa.Column('notes', sa.String(length=255), nullable=True),
     sa.Column('location', sa.String(length=255), nullable=True),
     sa.Column('service_id', sa.Integer(), nullable=True),
+    sa.Column('duration', sa.Integer(), nullable=True),
+    sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['participant_id'], ['participants.id'], ),
@@ -510,15 +515,17 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('med_errors',
-    sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('drug_id', sa.Integer(), nullable=False),
     sa.Column('mar_id', sa.Integer(), nullable=False),
     sa.Column('participant_id', sa.Integer(), nullable=False),
     sa.Column('error_reason_id', sa.Integer(), nullable=False),
     sa.Column('qty', sa.Integer(), nullable=False),
     sa.Column('comment', sa.String(length=225), nullable=True),
+    sa.Column('created_by', sa.Integer(), nullable=False),
+    sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
+    sa.ForeignKeyConstraint(['created_by'], ['users.id'], ),
     sa.ForeignKeyConstraint(['drug_id'], ['drugs.id'], ),
     sa.ForeignKeyConstraint(['error_reason_id'], ['med_error_reasons.id'], ),
     sa.ForeignKeyConstraint(['mar_id'], ['prescriptions.id'], ),
@@ -569,6 +576,7 @@ def downgrade():
     op.drop_table('daily_notes')
     op.drop_table('case_manager')
     op.drop_table('caregivers')
+    op.drop_table('behavioral_issues')
     op.drop_table('batch_num_records')
     op.drop_table('appointments')
     op.drop_table('administrative_documentations')
@@ -591,6 +599,5 @@ def downgrade():
     op.drop_table('document_types')
     op.drop_table('companies')
     op.drop_table('bio_titles')
-    op.drop_table('behavioral_statuses')
     op.drop_table('axis')
     # ### end Alembic commands ###
